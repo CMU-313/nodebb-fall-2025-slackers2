@@ -2,6 +2,7 @@
 
 const db = require('../database');
 const topics = require('../topics');
+const MAX_PREVIEW_LENGTH = 200; // Adjust preview length as needed
 const plugins = require('../plugins');
 const meta = require('../meta');
 const privileges = require('../privileges');
@@ -22,6 +23,35 @@ module.exports = function (Categories) {
 			return { topics: [], uid: data.uid };
 		}
 		topics.calculateTopicIndices(topicsData, data.start);
+
+		// Fetch content previews for pinned topics
+		const pinnedTids = await Categories.getPinnedTids({ cid: data.cid, start: 0, stop: -1 });
+		const pinnedTidSet = new Set(pinnedTids);
+		const pinnedTopics = topicsData.filter(topic => pinnedTidSet.has(String(topic.tid)));
+		const pinnedTopicIds = pinnedTopics.map(topic => String(topic.tid));
+
+		let mainPosts = [];
+		if (pinnedTopicIds.length) {
+			mainPosts = await topics.getMainPosts(pinnedTopicIds, data.uid);
+		}
+
+		const tidToPreview = {};
+		mainPosts.forEach((post) => {
+			if (post && post.content) {
+				tidToPreview[String(post.tid)] = (post.content.length > MAX_PREVIEW_LENGTH) ? 
+					(post.content.slice(0, MAX_PREVIEW_LENGTH) + '...') : 
+					post.content;
+			}
+		});
+
+		topicsData.forEach((topic) => {
+			if (pinnedTidSet.has(String(topic.tid))) {
+				topic.contentPreview = tidToPreview[String(topic.tid)] || '';
+			}
+		});
+
+		// Debug print: show all topicsData after contentPreview assignment
+		console.log('[Debug] topicsData after preview:', topicsData.map(t => ({ tid: t.tid, title: t.title, contentPreview: t.contentPreview })));
 
 		results = await plugins.hooks.fire('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
 		return { topics: results.topics, nextStart: data.stop + 1 };
