@@ -1,6 +1,6 @@
 'use strict';
 
-$(document).ready(function() {
+$(document).ready(function () {
 	const AnonymousToggle = {
 		init() {
 			this.bindEvents();
@@ -36,7 +36,7 @@ $(document).ready(function() {
 				$('#anonymous-checkbox').prop('checked', isAnonymous);
 				this.setAnonymousState(isAnonymous);
 			}
-		}
+		},
 	};
 
 	AnonymousToggle.init();

@@ -12,7 +12,7 @@ define('forum/category', [
 	'api',
 	'clipboard',
 	'forum/anonymousToggle',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard, anonymousToggle) {
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
