@@ -11,7 +11,8 @@ define('forum/category', [
 	'alerts',
 	'api',
 	'clipboard',
-], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
+	'forum/anonymousToggle',
+], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard, anonymousToggle) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {

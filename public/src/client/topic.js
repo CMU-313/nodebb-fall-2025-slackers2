@@ -17,11 +17,12 @@ define('forum/topic', [
 	'alerts',
 	'bootbox',
 	'clipboard',
+	'forum/anonymousToggle',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard
+	bootbox, clipboard, anonymousToggle
 ) {
 	const Topic = {};
 	let tid = '0';
