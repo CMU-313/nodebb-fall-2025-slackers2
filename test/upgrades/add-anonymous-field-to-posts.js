@@ -89,8 +89,8 @@ describe('Upgrade: Add anonymous field to posts', () => {
 		it('should run upgrade script without errors', async () => {
 			const mockProgress = {
 				total: 0,
-				incr: function(count) {
-				}
+				incr: function (count) {
+				},
 			};
 
 			// Run the upgrade script
@@ -130,8 +130,8 @@ describe('Upgrade: Add anonymous field to posts', () => {
 			// Run upgrade again
 			const mockProgress = {
 				total: 0,
-				incr: function(count) {
-				}
+				incr: function (count) {
+				},
 			};
 			await upgradeScript.method.bind({ progress: mockProgress })();
 
@@ -147,8 +147,8 @@ describe('Upgrade: Add anonymous field to posts', () => {
 			// Run upgrade script
 			const mockProgress = {
 				total: 0,
-				incr: function(count) {
-				}
+				incr: function (count) {
+				},
 			};
 
 			await assert.doesNotReject(async () => {
@@ -163,8 +163,8 @@ describe('Upgrade: Add anonymous field to posts', () => {
 			// Run upgrade script
 			const mockProgress = {
 				total: 0,
-				incr: function(count) {
-				}
+				incr: function (count) {
+				},
 			};
 
 			await assert.doesNotReject(async () => {
@@ -194,8 +194,8 @@ describe('Upgrade: Add anonymous field to posts', () => {
 			// Run upgrade script
 			const mockProgress = {
 				total: 0,
-				incr: function(count) {
-				}
+				incr: function (count) {
+				},
 			};
 			await upgradeScript.method.bind({ progress: mockProgress })();
 
