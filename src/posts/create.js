@@ -39,6 +39,7 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
+		postData.anonymous = data.anonymous || 0;
 		if (_activitypub) {
 			if (_activitypub.url) {
 				postData.url = _activitypub.url;
