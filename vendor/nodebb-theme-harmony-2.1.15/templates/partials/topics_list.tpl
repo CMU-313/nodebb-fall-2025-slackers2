@@ -23,6 +23,11 @@
 				<h3 component="topic/header" class="title text-break fs-5 fw-semibold m-0 tracking-tight w-100 {{{ if showSelect }}}me-4 me-lg-0{{{ end }}}">
 					<a class="text-reset" href="{{{ if topics.noAnchor }}}#{{{ else }}}{config.relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}{{{ end }}}">{./title}</a>
 				</h3>
+					{{{ if ./pinned && ./contentPreview }}}
+					<div class="topic-content-preview alert alert-info mt-2 mb-0 p-2 text-break">
+						{./contentPreview}
+					</div>
+					{{{ end }}}
 				<span component="topic/labels" class="d-flex flex-wrap gap-1 w-100">
 					<span component="topic/watched" class="badge border border-gray-300 text-body {{{ if !./followed }}}hidden{{{ end }}}">
 						<i class="fa fa-bell-o"></i>
