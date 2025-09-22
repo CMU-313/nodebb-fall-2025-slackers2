@@ -17,9 +17,17 @@
 		</div>
 	</div>
 	<div class="d-flex justify-content-between align-items-center text-xs w-100 px-2 mt-1">
-		<div component="chat/composer/typing" class="">
-			<div component="chat/composer/typing/users" class="hidden"></div>
-			<div component="chat/composer/typing/text" class="hidden"></div>
+		<div class="d-flex align-items-center gap-2">
+			<div component="chat/composer/typing" class="">
+				<div component="chat/composer/typing/users" class="hidden"></div>
+				<div component="chat/composer/typing/text" class="hidden"></div>
+			</div>
+			<div class="form-check">
+				<input component="chat/composer/anonymous" class="form-check-input" type="checkbox" id="anonymousMessage" title="[[modules:chat.send-anonymous]]" data-bs-toggle="tooltip">
+				<label class="form-check-label text-xs text-muted" for="anonymousMessage">
+					[[modules:chat.anonymous]]
+				</label>
+			</div>
 		</div>
 		<div component="chat/message/remaining" class="text-xs text-muted">{maximumChatMessageLength}</div>
 	</div>

@@ -11,6 +11,7 @@ define('forum/category', [
 	'alerts',
 	'api',
 	'clipboard',
+	'forum/anonymousToggle',
 ], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
 	const Category = {};
 
