@@ -2,7 +2,7 @@
 
 const db = require('../database');
 const topics = require('../topics');
-const MAX_PREVIEW_LENGTH = 200; // Adjust preview length as needed
+const MAX_PREVIEW_LENGTH = 500; // Adjust as needed
 const plugins = require('../plugins');
 const meta = require('../meta');
 const privileges = require('../privileges');
@@ -49,9 +49,6 @@ module.exports = function (Categories) {
 				topic.contentPreview = tidToPreview[String(topic.tid)] || '';
 			}
 		});
-
-		// Debug print: show all topicsData after contentPreview assignment
-		console.log('[Debug] topicsData after preview:', topicsData.map(t => ({ tid: t.tid, title: t.title, contentPreview: t.contentPreview })));
 
 		results = await plugins.hooks.fire('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
 		return { topics: results.topics, nextStart: data.stop + 1 };
