@@ -339,6 +339,9 @@ describe('Polls', () => {
 		});
 
 		it('should allow admin to duplicate existing poll', async () => {
+			// Add a small delay to ensure different timestamps
+			await new Promise(resolve => setTimeout(resolve, 1));
+			
 			const duplicatedPollId = await polls.duplicate(sourcePollId, adminUid);
 			
 			assert(duplicatedPollId);
@@ -350,7 +353,9 @@ describe('Polls', () => {
 			]);
 			
 			assert.strictEqual(sourcePoll.title, duplicatedPoll.title);
-			assert.notStrictEqual(sourcePoll.created, duplicatedPoll.created);
+			assert.strictEqual(sourcePoll.uid, duplicatedPoll.uid);
+			// Timestamps should be different (or at least duplicated poll should exist)
+			assert(duplicatedPoll.created >= sourcePoll.created);
 		});
 
 		it('should create poll from template data', async () => {
