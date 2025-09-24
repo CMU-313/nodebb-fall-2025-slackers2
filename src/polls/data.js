@@ -131,3 +131,40 @@ module.exports = function (Polls) {
 		return await db.sortedSetCard(`cid:${cid}:polls`);
 	};
 };
+
+function modifyPoll(poll, fields) {
+	if (!poll) {
+		return;
+	}
+
+	db.parseIntFields(poll, intFields, fields);
+
+	if (poll.uid) {
+		poll.uid = String(poll.uid);
+	}
+	if (poll.pollId) {
+		poll.pollId = String(poll.pollId);
+	}
+	if (poll.settings && typeof poll.settings === 'string') {
+		try {
+			poll.settings = JSON.parse(poll.settings);
+		} catch (e) {
+			// Keep as string if parsing fails
+		}
+	}
+}
+
+function modifyPollOption(option, fields) {
+	if (!option) {
+		return;
+	}
+
+	db.parseIntFields(option, intFields, fields);
+
+	if (option.optionId) {
+		option.optionId = String(option.optionId);
+	}
+	if (option.pollId) {
+		option.pollId = String(option.pollId);
+	}
+}
