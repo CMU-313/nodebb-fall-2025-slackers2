@@ -7,6 +7,7 @@ const Polls = module.exports;
 
 require('./data')(Polls);
 require('./create')(Polls);
+require('./votes')(Polls);
 
 Polls.exists = async function (pollIds) {
 	if (Array.isArray(pollIds)) {
