@@ -176,20 +176,17 @@ describe('Upgrade: Add anonymous field to posts', () => {
 	describe('Batch processing', () => {
 		it('should process posts in batches correctly', async () => {
 			// Create many posts to test batch processing
-			const manyPosts = [];
-			for (let i = 0; i < 10; i++) {
-				const post = await posts.create({
-					uid: testUid,
-					tid: topicData.tid,
-					content: `Batch test post ${i}`,
-				});
-				manyPosts.push(post);
-			}
+			const postPromises = Array.from({ length: 10 }, (_, i) => posts.create({
+				uid: testUid,
+				tid: topicData.tid,
+				content: `Batch test post ${i}`,
+			}));
+			const manyPosts = await Promise.all(postPromises);
 
 			// Remove anonymous field from these posts to simulate pre-upgrade state
-			for (const post of manyPosts) {
-				await db.deleteObjectField(`post:${post.pid}`, 'anonymous');
-			}
+			await Promise.all(manyPosts.map(post => 
+				db.deleteObjectField(`post:${post.pid}`, 'anonymous')
+			));
 
 			// Run upgrade script
 			const mockProgress = {
@@ -200,11 +197,13 @@ describe('Upgrade: Add anonymous field to posts', () => {
 			await upgradeScript.method.bind({ progress: mockProgress })();
 
 			// Verify all posts now have anonymous field
-			for (const post of manyPosts) {
-				const postData = await db.getObject(`post:${post.pid}`);
+			const postDataArray = await Promise.all(manyPosts.map(post => 
+				db.getObject(`post:${post.pid}`)
+			));
+			postDataArray.forEach((postData) => {
 				assert(postData.hasOwnProperty('anonymous'));
 				assert.strictEqual(parseInt(postData.anonymous), 0);
-			}
+			});
 		});
 	});
 
