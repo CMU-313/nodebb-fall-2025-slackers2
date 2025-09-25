@@ -2,7 +2,6 @@
 
 const db = require('../database');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
 
 module.exports = function (Polls) {
 	const votesInProgress = {};
@@ -45,7 +44,7 @@ module.exports = function (Polls) {
 		if (!uid || parseInt(uid, 10) <= 0) {
 			return null;
 		}
-		const optionId = await db.getSortedSetScore(`poll:${pollId}:voters`, uid);
+		const optionId = await db.sortedSetScore(`poll:${pollId}:voters`, uid);
 		return optionId !== null ? {
 			pollId: String(pollId),
 			optionId: String(optionId),
@@ -82,13 +81,6 @@ module.exports = function (Polls) {
 			return false;
 		}
 
-		if (pollData.tid) {
-			const canRead = await privileges.topics.can('topics:read', pollData.tid, uid);
-			if (!canRead) {
-				return false;
-			}
-		}
-
 		return true;
 	};
 
@@ -105,10 +97,9 @@ module.exports = function (Polls) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const [pollExists, optionExists, canVote] = await Promise.all([
+		const [pollExists, optionExists] = await Promise.all([
 			Polls.exists(pollId),
 			db.isSortedSetMember(`poll:${pollId}:options`, optionId),
-			Polls.canVote(pollId, uid),
 		]);
 
 		if (!pollExists) {
@@ -116,9 +107,6 @@ module.exports = function (Polls) {
 		}
 		if (!optionExists) {
 			throw new Error('[[error:invalid-poll-option]]');
-		}
-		if (!canVote) {
-			throw new Error('[[error:no-privileges]]');
 		}
 	}
 

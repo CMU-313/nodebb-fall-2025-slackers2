@@ -41,7 +41,14 @@ pollsController.create = async function (req, res) {
 		const pollId = await Polls.create(pollData, req.uid);
 		const createdPoll = await Polls.getPollData(pollId);
 		
-		helpers.formatApiResponse(200, res, createdPoll);
+		// Add options to match schema expectations
+		const options = await Polls.getPollOptions(pollId);
+		const responseData = {
+			...createdPoll,
+			options,
+		};
+		
+		helpers.formatApiResponse(200, res, responseData);
 	} catch (err) {
 		helpers.formatApiResponse(400, res, err);
 	}
@@ -60,7 +67,14 @@ pollsController.update = async function (req, res) {
 		await Polls.setPollFields(pollId, updateData);
 		const updatedPoll = await Polls.getPollData(pollId);
 		
-		helpers.formatApiResponse(200, res, updatedPoll);
+		// Add options to match schema expectations
+		const options = await Polls.getPollOptions(pollId);
+		const responseData = {
+			...updatedPoll,
+			options,
+		};
+		
+		helpers.formatApiResponse(200, res, responseData);
 	} catch (err) {
 		helpers.formatApiResponse(400, res, err);
 	}
