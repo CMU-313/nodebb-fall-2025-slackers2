@@ -1,0 +1,42 @@
+post:
+  tags:
+    - polls
+  summary: create a poll
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              example: "What's your favorite color?"
+            options:
+              type: array
+              items:
+                type: string
+              example: ["Red", "Blue", "Green"]
+          required:
+            - title
+            - options
+  responses:
+    '200':
+      description: poll created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/PollObject.yaml#/PollObject
+    '400':
+      $ref: ../components/responses/400.yaml#/400
+    '401':
+      $ref: ../components/responses/401.yaml#/401
+    '403':
+      $ref: ../components/responses/403.yaml#/403
+    '500':
+      $ref: ../components/responses/500.yaml#/500
