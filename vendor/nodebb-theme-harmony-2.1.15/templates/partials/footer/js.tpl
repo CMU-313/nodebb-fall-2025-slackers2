@@ -5,7 +5,6 @@
 {{{end}}}
 
 <script>
-    alert('DEBUG: Template is working!');
     console.log('DEBUG: Script tag executed immediately');
     
     if (document.readyState === 'loading') {

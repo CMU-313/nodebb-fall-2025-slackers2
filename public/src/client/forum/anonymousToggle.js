@@ -1,43 +1,16 @@
 'use strict';
 
+console.log('DEBUG: AnonymousToggle.js loaded');
+
 $(document).ready(function () {
-	const AnonymousToggle = {
-		init() {
-			this.bindEvents();
-			this.loadSavedState();
-		},
-
-		bindEvents() {
-			$(document).on('change', '#anonymous-checkbox', this.handleToggle.bind(this));
-		},
-
-		handleToggle(e) {
-			const isAnonymous = $(e.target).is(':checked');
-			this.setAnonymousState(isAnonymous);
-		},
-
-		setAnonymousState(isAnonymous) {
-			// Save state to localStorage for persistence
-			localStorage.setItem('nodebb_anonymous_posting', isAnonymous.toString());
-			
-			// You can add visual feedback here if needed
-			const checkbox = $('#anonymous-checkbox');
-			if (isAnonymous) {
-				checkbox.closest('.form-check').addClass('text-warning');
-			} else {
-				checkbox.closest('.form-check').removeClass('text-warning');
-			}
-		},
-
-		loadSavedState() {
-			const savedState = localStorage.getItem('nodebb_anonymous_posting');
-			if (savedState !== null) {
-				const isAnonymous = savedState === 'true';
-				$('#anonymous-checkbox').prop('checked', isAnonymous);
-				this.setAnonymousState(isAnonymous);
-			}
-		},
-	};
-
-	AnonymousToggle.init();
+    console.log('DEBUG: AnonymousToggle.js document ready');
+    
+    // Simple checkbox detection
+    $(document).on('change', '#anonymous-checkbox', function(e) {
+        const isChecked = $(e.target).is(':checked');
+        console.log('DEBUG: Anonymous checkbox changed - checked:', isChecked);
+    });
+    
+    // Check if checkbox exists on page load
+    console.log('DEBUG: Found anonymous checkbox:', $('#anonymous-checkbox').length);
 });

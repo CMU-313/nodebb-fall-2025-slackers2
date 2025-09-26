@@ -17,7 +17,6 @@ define('forum/topic', [
 	'alerts',
 	'bootbox',
 	'clipboard',
-	'forum/anonymousToggle',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
