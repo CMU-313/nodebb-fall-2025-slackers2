@@ -22,7 +22,10 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:tid/state', [...middlewares], controllers.write.topics.delete);
 
 	setupApiRoute(router, 'put', '/:tid/pin', [...middlewares, middleware.assert.topic], controllers.write.topics.pin);
-	setupApiRoute(router, 'delete', '/:tid/pin', [...middlewares], controllers.write.topics.unpin);
+	setupApiRoute(router, 'delete', '/:tid/pin', [...middlewares, middleware.assert.topic], controllers.write.topics.unpin);
+
+	// Toggle per-topic content preview (admins/mods only)
+	setupApiRoute(router, 'put', '/:tid/preview', [...middlewares, middleware.assert.topic], controllers.write.topics.setShowPreview);
 
 	setupApiRoute(router, 'put', '/:tid/lock', [...middlewares], controllers.write.topics.lock);
 	setupApiRoute(router, 'delete', '/:tid/lock', [...middlewares], controllers.write.topics.unlock);
