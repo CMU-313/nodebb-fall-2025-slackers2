@@ -6,9 +6,9 @@
         [[category:new-topic-button]]
     </button>
     <!-- New Poll Button -->
-    <button class="btn btn-secondary btn-sm text-nowrap" id="new_poll" role="button">
+    <a href="{config.relative_path}/poll" class="btn btn-primary btn-sm text-nowrap" id="new_poll" role="button" data-ajaxify="false">
         [[category:new-poll-button]]
-    </button>
+    </a>
 </div>
 
 <noscript>

@@ -40,7 +40,7 @@
 					{{{ if privileges.topics:create }}}
 					<!-- IMPORT partials/buttons/anonymousToggle.tpl -->
 					<a href="{config.relative_path}/compose?cid={cid}" component="category/post" id="new_topic" class="btn btn-primary btn-sm text-nowrap" data-ajaxify="false" role="button">[[category:new-topic-button]]</a>
-					<button class="btn btn-secondary btn-sm text-nowrap" id="new_poll" role="button">[[category:new-poll-button]]</button>
+					<a href="{config.relative_path}/poll?cid={cid}" class="btn btn-primary btn-sm text-nowrap" id="new_poll" role="button" data-ajaxify="false">[[category:new-poll-button]]</a>
 					{{{ end }}}
 				{{{ else }}}
 					{{{ if canPost }}}
