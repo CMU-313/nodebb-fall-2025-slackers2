@@ -31,8 +31,19 @@ module.exports = function (Categories) {
 		const pinnedTopicIds = pinnedTopics.map(topic => String(topic.tid));
 
 		let mainPosts = [];
+		const tidToShowPreview = {};
 		if (pinnedTopicIds.length) {
 			mainPosts = await topics.getMainPosts(pinnedTopicIds, data.uid);
+
+			// Fetch persisted per-topic showPreview flags so we only attach previews when allowed
+			const showPreviewFields = await topics.getTopicsFields(pinnedTopicIds, ['showPreview']);
+			showPreviewFields.forEach((obj, idx) => {
+				if (obj && Object.prototype.hasOwnProperty.call(obj, 'showPreview')) {
+					tidToShowPreview[String(pinnedTopicIds[idx])] = Number(obj.showPreview) === 1;
+				} else {
+					tidToShowPreview[String(pinnedTopicIds[idx])] = false;
+				}
+			});
 		}
 
 		const tidToPreview = {};
@@ -46,7 +57,13 @@ module.exports = function (Categories) {
 
 		topicsData.forEach((topic) => {
 			if (pinnedTidSet.has(String(topic.tid))) {
-				topic.contentPreview = tidToPreview[String(topic.tid)] || '';
+				const allowed = tidToShowPreview[String(topic.tid)];
+				if (allowed) {
+					topic.contentPreview = tidToPreview[String(topic.tid)] || '';
+					topic.showPreview = true;
+				} else {
+					topic.showPreview = false;
+				}
 			}
 		});
 
