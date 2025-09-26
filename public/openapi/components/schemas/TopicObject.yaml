@@ -192,6 +192,13 @@ TopicObject:
           description: "`pinExpiry` rendered as an ISO 8601 format"
         index:
           type: number
+        showPreview:
+          type: boolean
+          description: Whether the topic's pinned preview should be shown
+        contentPreview:
+          type: string
+          nullable: true
+          description: Sanitized preview content for the topic's first post
       required:
         - tid
 TopicObjectSlim:
@@ -290,5 +297,12 @@ TopicObjectSlim:
         numThumbs:
           type: number
           description: The number of thumbnails associated with this topic
+        showPreview:
+          type: boolean
+          description: Whether the topic's pinned preview should be shown
+        contentPreview:
+          type: string
+          nullable: true
+          description: Sanitized preview content for the topic's first post
       required:
         - tid
