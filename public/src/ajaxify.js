@@ -640,7 +640,8 @@ $(document).ready(function () {
 				}
 
 				case null: {
-					e.preventDefault();
+					// Don't prevent default for links with data-ajaxify="false"
+					// Let them work as normal links
 					break;
 				}
 

@@ -10,9 +10,13 @@ exports.get = async function (req, res) {
 		content: 'noindex',
 	};
 
+	// Get all categories - for now, show all categories without privilege filtering
+	// This ensures users can see categories to select from
+	const categoriesList = await categories.getAllCategories();
+
 	const data = {
 		title: '[[poll:create-poll]]',
-		categories: await categories.getCategoriesByPrivilege('cid', req.uid, 'topics:create'),
+		categories: categoriesList,
 	};
 
 	// Pre-select category if provided in URL
