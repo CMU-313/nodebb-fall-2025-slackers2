@@ -223,6 +223,6 @@ Topics.move = async (req, res) => {
 
 Topics.setShowPreview = async (req, res) => {
 	const { show } = req.body;
-	await api.topics.setShowPreview(req, { tid: req.params.tid, show });
-	helpers.formatApiResponse(200, res);
+	const payload = await api.topics.setShowPreview(req, { tid: req.params.tid, show });
+	helpers.formatApiResponse(200, res, payload);
 };
