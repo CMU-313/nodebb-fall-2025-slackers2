@@ -1,0 +1,92 @@
+post:
+  tags:
+    - polls
+  summary: vote on poll
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            optionId:
+              type: string
+              example: "2"
+          required:
+            - optionId
+  responses:
+    '200':
+      description: vote cast
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  pollId:
+                    type: string
+                  optionId:
+                    type: string
+                  uid:
+                    type: string
+                  isRevote:
+                    type: boolean
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../../components/responses/500.yaml#/500
+delete:
+  tags:
+    - polls
+  summary: remove vote
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  responses:
+    '200':
+      description: vote removed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  pollId:
+                    type: string
+                  uid:
+                    type: string
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../../components/responses/500.yaml#/500

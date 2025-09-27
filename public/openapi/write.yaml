@@ -49,6 +49,8 @@ tags:
     description: Administrative calls
   - name: files
     description: File upload routes
+  - name: polls
+    description: Poll-related operations
 paths:
   /ping:
     $ref: 'write/ping.yaml'
@@ -274,3 +276,13 @@ paths:
     $ref: 'write/files.yaml'
   /files/folder:
     $ref: 'write/files/folder.yaml'
+  /polls/:
+    $ref: 'write/polls.yaml'
+  /polls/{pollId}:
+    $ref: 'write/polls/pollId.yaml'
+  /polls/{pollId}/vote:
+    $ref: 'write/polls/pollId/vote.yaml'
+  /polls/{pollId}/close:
+    $ref: 'write/polls/pollId/close.yaml'
+  /polls/{pollId}/reopen:
+    $ref: 'write/polls/pollId/reopen.yaml'

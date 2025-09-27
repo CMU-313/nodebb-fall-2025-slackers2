@@ -1,0 +1,59 @@
+PollObject:
+  type: object
+  properties:
+    pollId:
+      type: string
+    uid:
+      type: string
+    title:
+      type: string
+    created:
+      type: number
+    updated:
+      type: number
+    deleted:
+      type: number
+    endDate:
+      type: number
+    optionId:
+      type: string
+    votes:
+      type: number
+    index:
+      type: number
+    options:
+      type: array
+      items:
+        type: object
+        properties:
+          optionId:
+            type: string
+          pollId:
+            type: string
+          text:
+            type: string
+          votes:
+            type: number
+          index:
+            type: number
+          uid:
+            type: number
+          created:
+            type: number
+          updated:
+            type: number
+          deleted:
+            type: number
+          endDate:
+            type: number
+    userVote:
+      type: object
+      nullable: true
+    canVote:
+      type: boolean
+    voteCount:
+      type: number
+  required:
+    - pollId
+    - title
+    - options

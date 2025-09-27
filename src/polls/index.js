@@ -5,50 +5,9 @@ const user = require('../user');
 
 const Polls = module.exports;
 
+require('./data')(Polls);
 require('./create')(Polls);
-Polls.getPollData = async function (pollId) {
-	if (!pollId) {
-		return null;
-	}
-	const poll = await db.getObject(`poll:${pollId}`);
-	if (!poll) {
-		return null;
-	}
-	if (poll.uid) {
-		poll.uid = String(poll.uid);
-	}
-	if (poll.pollId) {
-		poll.pollId = String(poll.pollId);
-	}
-	if (poll.settings && typeof poll.settings === 'string') {
-		try {
-			poll.settings = JSON.parse(poll.settings);
-		} catch (e) {
-		}
-	}
-	return poll;
-};
-
-Polls.getPollOptions = async function (pollId) {
-	if (!pollId) {
-		return [];
-	}
-	const optionIds = await db.getSortedSetRange(`poll:${pollId}:options`, 0, -1);
-	if (!optionIds.length) {
-		return [];
-	}
-	const keys = optionIds.map(optionId => `polloption:${optionId}`);
-	const options = await db.getObjects(keys);
-	return options.filter(Boolean).map((option) => {
-		if (option.optionId) {
-			option.optionId = String(option.optionId);
-		}
-		if (option.pollId) {
-			option.pollId = String(option.pollId);
-		}
-		return option;
-	});
-};
+require('./votes')(Polls);
 
 Polls.exists = async function (pollIds) {
 	if (Array.isArray(pollIds)) {
@@ -114,11 +73,6 @@ Polls.removePollFromSets = async function (pollId, cid) {
 	if (cid) {
 		await db.sortedSetRemove(`cid:${cid}:polls`, pollId);
 	}
-};
-
-Polls.setPollField = async function (pollId, field, value) {
-	await db.setObjectField(`poll:${pollId}`, field, value);
-	await db.setObjectField(`poll:${pollId}`, 'updated', Date.now());
 };
 
 Polls.getPollTopic = async function (pollId) {
