@@ -220,3 +220,9 @@ Topics.move = async (req, res) => {
 
 	helpers.formatApiResponse(200, res);
 };
+
+Topics.setShowPreview = async (req, res) => {
+	const { show } = req.body;
+	const payload = await api.topics.setShowPreview(req, { tid: req.params.tid, show });
+	helpers.formatApiResponse(200, res, payload);
+};
