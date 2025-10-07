@@ -10,9 +10,16 @@
 
 		<div class="d-flex p-0 col-12 col-lg-7 gap-2 gap-lg-3 pe-1 align-items-start {{{ if config.theme.mobileTopicTeasers }}}mb-2 mb-lg-0{{{ end }}}">
 			<div class="flex-shrink-0 position-relative">
-				<a class="d-inline-block text-decoration-none avatar-tooltip" title="{./user.displayname}" href="{{{ if ./user.userslug }}}{config.relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}">
-					{buildAvatar(./user, "40px", true)}
-				</a>
+				{{{ if ./isAnonymous }}}
+					<div class="d-inline-flex justify-content-center align-items-center rounded-circle bg-secondary-subtle text-secondary" style="width:40px;height:40px;">
+						<i class="fa fa-user-secret" aria-hidden="true"></i>
+						<span class="visually-hidden">Anonymous</span>
+					</div>
+				{{{ else }}}
+					<a class="d-inline-block text-decoration-none avatar-tooltip" title="{./user.displayname}" href="{{{ if ./user.userslug }}}{config.relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}">
+						{buildAvatar(./user, "40px", true)}
+					</a>
+				{{{ end }}}
 				{{{ if showSelect }}}
 				<div class="checkbox position-absolute top-100 start-50 translate-middle-x pt-2 m-0 d-none d-lg-flex" style="max-width:max-content">
 					<i component="topic/select" class="fa text-muted pointer fa-square-o p-1 hover-visible"></i>

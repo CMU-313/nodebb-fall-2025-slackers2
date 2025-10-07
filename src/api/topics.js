@@ -56,14 +56,22 @@ topicsAPI.get = async function (caller, data) {
 };
 
 topicsAPI.create = async function (caller, data) {
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
+    if (!data) {
+        throw new Error('[[error:invalid-data]]');
+    }
 
-	const payload = { ...data };
-	delete payload.tid;
-	payload.tags = payload.tags || [];
-	apiHelpers.setDefaultPostData(caller, payload);
+	let payload;
+    try {
+		payload = { ...data };
+		delete payload.tid;
+		payload.tags = payload.tags || [];
+		apiHelpers.setDefaultPostData(caller, payload);
+		
+		// Set anonymous field - default to 0 if not provided
+		payload.anonymous = data.anonymous !== undefined ? data.anonymous : 0;
+	} catch (error) {
+		throw error;
+	}
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
 	if (isScheduling) {
 		if (await privileges.categories.can('topics:schedule', data.cid, caller.uid)) {

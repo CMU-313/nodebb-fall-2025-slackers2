@@ -40,13 +40,15 @@ exports.get = async function (req, res, callback) {
 };
 
 exports.post = async function (req, res) {
-	const { body } = req;
+    const { body } = req;
+    
 	const data = {
 		uid: req.uid,
 		req: req,
 		timestamp: Date.now(),
 		content: body.content,
 		handle: body.handle,
+		anonymous: body.anonymous ? 1 : 0,
 		fromQueue: false,
 	};
 	req.body.noscript = 'true';

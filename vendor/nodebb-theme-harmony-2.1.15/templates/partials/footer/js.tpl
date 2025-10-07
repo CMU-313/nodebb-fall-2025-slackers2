@@ -5,33 +5,19 @@
 {{{end}}}
 
 <script>
-    console.log('DEBUG: Script tag executed immediately');
-    
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', prepareFooter);
-    } else {
-        prepareFooter();
-    }
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepareFooter);
+} else {
+    prepareFooter();
+}
 
-    function prepareFooter() {
-        console.log('DEBUG: prepareFooter function called');
-        
-        {{{ if useCustomJS }}}
-        {{customJS}}
-        {{{ end }}}
+function prepareFooter() {
+    {{{ if useCustomJS }}}
+    {{customJS}}
+    {{{ end }}}
 
-        $(document).ready(function () {
-            console.log('DEBUG: jQuery document ready');
-            app.coldLoad();
-            
-            // Simple test for anonymous checkbox
-            console.log('DEBUG: Footer script loaded');
-            console.log('DEBUG: Found anonymous checkbox:', $('#anonymous-checkbox').length);
-            
-            $(document).on('change', '#anonymous-checkbox', function(e) {
-                const isChecked = $(e.target).is(':checked');
-                console.log('DEBUG: Anonymous checkbox changed - checked:', isChecked);
-            });
-        });
-    }
+    $(document).ready(function () {
+        app.coldLoad();
+    });
+}
 </script>
