@@ -39,3 +39,28 @@ exports.post = async function (req, res) {
 	const cid = body.cid || 1;
 	res.redirect(`${nconf.get('relative_path')}/category/${cid}`);
 };
+
+// API method for getting poll data
+exports.getApi = async function (req, res) {
+	try {
+		// Get all categories for poll creation
+		const categoriesList = await categories.getAllCategories();
+		
+		const data = {
+			categories: categoriesList,
+		};
+
+		// Pre-select category if provided in query
+		if (req.query.cid) {
+			data.categories.forEach((category) => {
+				if (category.cid == req.query.cid) {
+					category.selected = true;
+				}
+			});
+		}
+
+		res.json(data);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
