@@ -94,15 +94,15 @@ Topics.getTopicsByTids = async function (tids, options) {
 			return data;
 		}
 
-			const mainPids = topics.map(t => t && t.mainPid);
-			const [teasers, users, userSettings, categoriesData, guestHandles, thumbs, mainPostAnonFlags] = await Promise.all([
+		const mainPids = topics.map(t => t && t.mainPid);
+		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs, mainPostAnonFlags] = await Promise.all([
 			Topics.getTeasers(topics, options),
 			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
-				Topics.thumbs.load(topics),
-				posts.getPostsFields(mainPids, ['anonymous']),
+			Topics.thumbs.load(topics),
+			posts.getPostsFields(mainPids, ['anonymous']),
 		]);
 
 		users.forEach((userObj, idx) => {
@@ -112,21 +112,21 @@ Topics.getTopicsByTids = async function (tids, options) {
 			}
 		});
 
-			const tidToAnonymous = {};
-			mainPostAnonFlags.forEach((post, idx) => {
-				if (topics[idx] && post) {
-					tidToAnonymous[topics[idx].tid] = parseInt(post.anonymous, 10) === 1;
-				}
-			});
+		const tidToAnonymous = {};
+		mainPostAnonFlags.forEach((post, idx) => {
+			if (topics[idx] && post) {
+				tidToAnonymous[topics[idx].tid] = parseInt(post.anonymous, 10) === 1;
+			}
+		});
 
-			return {
+		return {
 			topics,
 			teasers,
 			usersMap: _.zipObject(uids, users),
 			categoriesMap: _.zipObject(cids, categoriesData),
 			tidToGuestHandle: _.zipObject(guestTopics.map(t => t.tid), guestHandles),
-				thumbs,
-				tidToAnonymous,
+			thumbs,
+			tidToAnonymous,
 		};
 	}
 
@@ -139,19 +139,19 @@ Topics.getTopicsByTids = async function (tids, options) {
 	]);
 
 	const sortNewToOld = callerSettings.topicPostSort === 'newest_to_oldest';
-		result.topics.forEach((topic, i) => {
+	result.topics.forEach((topic, i) => {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
 			topic.category = result.categoriesMap[topic.cid];
-				const baseUser = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
-				const isAnonymous = !!result.tidToAnonymous[topic.tid];
-				topic.isAnonymous = isAnonymous;
-				topic.user = isAnonymous ? { uid: 0, username: 'Anonymous', displayname: 'Anonymous' } : baseUser;
-				if (isAnonymous) {
-					// Ensure no profile link or avatar specifics leak in list
-					delete topic.user.userslug;
-					delete topic.user.picture;
-				}
+			const baseUser = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
+			const isAnonymous = !!result.tidToAnonymous[topic.tid];
+			topic.isAnonymous = isAnonymous;
+			topic.user = isAnonymous ? { uid: 0, username: 'Anonymous', displayname: 'Anonymous' } : baseUser;
+			if (isAnonymous) {
+				// Ensure no profile link or avatar specifics leak in list
+				delete topic.user.userslug;
+				delete topic.user.picture;
+			}
 			if (result.tidToGuestHandle[topic.tid]) {
 				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
 				topic.user.displayname = topic.user.username;

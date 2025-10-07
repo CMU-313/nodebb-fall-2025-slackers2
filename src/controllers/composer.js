@@ -40,8 +40,8 @@ exports.get = async function (req, res, callback) {
 };
 
 exports.post = async function (req, res) {
-    const { body } = req;
-    
+	const { body } = req;
+
 	const data = {
 		uid: req.uid,
 		req: req,
