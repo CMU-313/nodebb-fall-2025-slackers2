@@ -13,6 +13,11 @@ define('forum/category/tools', [
 	const CategoryTools = {};
 
 	CategoryTools.init = function () {
+		/* Debug instrumentation for toggle preview feature */
+		try {
+			console.log('[TogglePreview][init] Start init. Found preview blocks:', $('.topic-content-preview').length);
+			console.log('[TogglePreview][init] Toggle button present?', $('[component="topic/toggle-preview"]').length > 0);
+		} catch (e) { /* noop */ }
 		topicSelect.init(updateDropdownOptions);
 
 		handlePinnedTopicSort();
@@ -53,6 +58,22 @@ define('forum/category/tools', [
 
 		components.get('topic/unpin').on('click', function () {
 			categoryCommand('del', '/pin', 'unpin', onCommandComplete);
+			return false;
+		});
+
+		// Use delegation in case the tools dropdown is re-rendered after init
+		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', function () {
+			const previews = $('.topic-content-preview');
+			if (!previews.length) { return false; }
+			if (!document.getElementById('nbb-hide-pinned-previews-style')) {
+				const style = document.createElement('style');
+				style.id = 'nbb-hide-pinned-previews-style';
+				style.textContent = '.hide-pinned-previews .topic-content-preview{display:none !important;}';
+				document.head.appendChild(style);
+			}
+			const anyVisible = previews.toArray().some(el => $(el).is(':visible'));
+			document.body.classList.toggle('hide-pinned-previews', anyVisible);
+			closeDropDown();
 			return false;
 		});
 
@@ -225,6 +246,11 @@ define('forum/category/tools', [
 		components.get('topic/unpin').toggleClass('hidden', areAllScheduled || !isAnyPinned);
 
 		components.get('topic/merge').toggleClass('hidden', isAnyScheduled);
+
+		// Show toggle preview if there are pinned topics at all (even if not selected)
+		// Show toggle if any preview blocks exist (covers pinned topics use case)
+		const anyPreviewBlocks = $('.topic-content-preview').length > 0;
+		components.get('topic/toggle-preview').toggleClass('hidden', !anyPreviewBlocks);
 	}
 
 	function isAny(method, tids) {

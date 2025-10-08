@@ -155,6 +155,9 @@ TopicObject:
                 type: string
               score:
                 type: number
+        contentPreview:
+          type: string
+          description: Truncated main post content for pinned topics in category listings
         isOwner:
           type: boolean
         ignored:
