@@ -16,6 +16,7 @@ const helpers = require('./helpers');
 const utils = require('../utils');
 const translator = require('../translator');
 const analytics = require('../analytics');
+const Polls = require('../polls');
 
 const categoryController = module.exports;
 
@@ -178,6 +179,57 @@ categoryController.get = async function (req, res, next) {
 		const remoteOk = await privileges.categories.can('read', cid, activitypub._constants.uid);
 		if (remoteOk) {
 			categoryData.handleFull = `${categoryData.handle}@${nconf.get('url_parsed').host}`;
+		}
+	}
+
+	// Fetch poll data if category has a poll and add it to topics list
+	const pollId = await db.getObjectField(`category:${cid}`, 'pollId');
+	if (pollId) {
+		const [pollData, pollOptions, userVote, canVote] = await Promise.all([
+			Polls.getPollData(pollId),
+			Polls.getPollOptions(pollId),
+			Polls.getUserVote(pollId, req.uid),
+			Polls.canVote(pollId, req.uid),
+		]);
+
+		if (pollData) {
+			// Create a poll object that looks like a topic
+			const pollAsTopic = {
+				tid: `poll-${pollId}`,
+				title: pollData.title,
+				slug: `poll-${pollId}`,
+				lastposttime: pollData.updated,
+				postcount: await Polls.getVoteCount(pollId),
+				viewcount: 0,
+				pinned: 0,
+				locked: 0,
+				deleted: 0,
+				uid: pollData.uid,
+				teaser: {
+					content: `Poll with ${pollOptions.length} options`,
+					pid: null,
+					uid: pollData.uid,
+				},
+				user: {
+					uid: pollData.uid,
+					username: 'Poll Creator',
+					userslug: 'poll-creator',
+					picture: null,
+				},
+				isPoll: true,
+				pollId: pollId,
+				pollData: {
+					...pollData,
+					options: pollOptions,
+					userVote: userVote,
+					canVote: canVote,
+					voteCount: await Polls.getVoteCount(pollId),
+				},
+			};
+
+			// Add poll to the beginning of topics list
+			categoryData.topics = [pollAsTopic, ...categoryData.topics];
+			categoryData.topic_count = categoryData.topic_count + 1;
 		}
 	}
 
