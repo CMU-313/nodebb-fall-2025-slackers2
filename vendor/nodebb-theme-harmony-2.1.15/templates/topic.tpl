@@ -61,13 +61,13 @@
 				{{{ if forker }}}
 				<!-- IMPORT partials/topic/forked-message.tpl -->
 				{{{ end }}}
-				{{{ if !scheduled }}}
-				<!-- IMPORT partials/topic/deleted-message.tpl -->
-				{{{ end }}}
+			{{{ if !scheduled }}}
+			<!-- IMPORT partials/topic/deleted-message.tpl -->
+			{{{ end }}}
 
-				<div class="d-flex gap-0 gap-lg-5">
-					<div class="posts-container" style="min-width: 0;">
-						<ul component="topic" class="posts timeline list-unstyled p-0 py-3" style="min-width: 0;" data-tid="{tid}" data-cid="{cid}">
+			<div class="d-flex gap-0 gap-lg-5">
+				<div class="posts-container" style="min-width: 0;">
+					<ul component="topic" class="posts timeline list-unstyled p-0 py-3" style="min-width: 0;" data-tid="{tid}" data-cid="{cid}">
 						{{{ each posts }}}
 							<li component="post" class="{{{ if (./index != 0) }}}pt-4{{{ end }}} {{{ if posts.deleted }}}deleted{{{ end }}} {{{ if posts.selfPost }}}self-post{{{ end }}} {{{ if posts.topicOwnerPost }}}topic-owner-post{{{ end }}}" <!-- IMPORT partials/data/topic.tpl -->>
 								<a component="post/anchor" data-index="{./index}" id="{increment(./index, "1")}"></a>
