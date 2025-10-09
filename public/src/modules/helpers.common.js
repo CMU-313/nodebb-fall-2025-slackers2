@@ -35,6 +35,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		formattedNumber,
 		txEscape,
 		generatePlaceholderWave,
+		calculatePercentage,
 		register,
 		__escape: identity,
 	};
@@ -392,6 +393,13 @@ module.exports = function (utils, Benchpress, relative_path) {
 		});
 
 		return html.join('');
+	}
+
+	function calculatePercentage(votes, total) {
+		if (!total || total === 0) {
+			return 0;
+		}
+		return Math.round((votes / total) * 100);
 	}
 
 	function register() {
