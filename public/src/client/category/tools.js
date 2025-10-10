@@ -13,6 +13,11 @@ define('forum/category/tools', [
 	const CategoryTools = {};
 
 	CategoryTools.init = function () {
+		/* Debug instrumentation for toggle preview feature */
+		try {
+			console.log('[TogglePreview][init] Start init. Found preview blocks:', $('.topic-content-preview').length);
+			console.log('[TogglePreview][init] Toggle button present?', $('[component="topic/toggle-preview"]').length > 0);
+		} catch (e) { /* noop */ }
 		topicSelect.init(updateDropdownOptions);
 
 		handlePinnedTopicSort();
@@ -53,6 +58,38 @@ define('forum/category/tools', [
 
 		components.get('topic/unpin').on('click', function () {
 			categoryCommand('del', '/pin', 'unpin', onCommandComplete);
+			return false;
+		});
+
+		// Toggle content preview for selected pinned topics (persist via API)
+		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', async function () {
+			const tids = topicSelect.getSelectedTids();
+			if (!tids.length) {
+				return alerts.error('[[error:no-topics-selected]]');
+			}
+			// Collect pinned topic rows that have a preview container
+			const rows = [];
+			tids.forEach((tid) => {
+				const row = $('[component="category/topic"][data-tid="' + tid + '"]');
+				if (row.length && row.hasClass('pinned') && row.find('.topic-content-preview').length) {
+					rows.push({ tid, row, preview: row.find('.topic-content-preview') });
+				}
+			});
+			if (!rows.length) {
+				return alerts.error('No pinned topics with previews in selection');
+			}
+			// If any selected preview is visible, next state = hide all; else show all
+			const anyVisible = rows.some(({ preview }) => preview.is(':visible') && !preview.hasClass('hidden'));
+			const show = !anyVisible;
+			try {
+				await Promise.all(rows.map(({ tid }) => api.put(`/topics/${tid}/preview`, { show })));
+				// Reflect change immediately in UI
+				rows.forEach(({ preview }) => preview.toggleClass('hidden', !show ? true : false));
+				alerts.success(show ? 'Enabled content previews' : 'Disabled content previews');
+				closeDropDown();
+			} catch (err) {
+				alerts.error(err);
+			}
 			return false;
 		});
 
@@ -225,6 +262,13 @@ define('forum/category/tools', [
 		components.get('topic/unpin').toggleClass('hidden', areAllScheduled || !isAnyPinned);
 
 		components.get('topic/merge').toggleClass('hidden', isAnyScheduled);
+
+		// Show toggle preview only if a selected topic is pinned and has a preview
+		const showToggle = tids.some((tid) => {
+			const row = getTopicEl(tid);
+			return row && row.hasClass('pinned') && row.find('.topic-content-preview').length;
+		});
+		components.get('topic/toggle-preview').toggleClass('hidden', !showToggle);
 	}
 
 	function isAny(method, tids) {

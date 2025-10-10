@@ -101,6 +101,11 @@ helpers.uploadFile = async function (uploadEndPoint, filePath, data, jar, csrf_t
 		form.append('params', data.params);
 	}
 
+	// Apply abortable timeout to avoid hanging tests
+	const controller = new AbortController();
+	const defaultTestTimeout = (process.env.CI || process.env.NODE_ENV === 'test') ? 7000 : 15000;
+	const timeoutMs = parseInt(process.env.TEST_FETCH_TIMEOUT || String(defaultTestTimeout), 10);
+	const timer = setTimeout(() => controller.abort(), timeoutMs);
 	const response = await fetch(uploadEndPoint, {
 		method: 'post',
 		body: form,
@@ -108,7 +113,9 @@ helpers.uploadFile = async function (uploadEndPoint, filePath, data, jar, csrf_t
 			'x-csrf-token': csrf_token,
 			cookie: await jar.getCookieString(uploadEndPoint),
 		},
+		signal: controller.signal,
 	});
+	clearTimeout(timer);
 	const body = await response.json();
 	return {
 		body,
