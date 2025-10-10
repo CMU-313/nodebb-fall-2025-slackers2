@@ -154,6 +154,61 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	const filteredTopics = result.topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
+	// Populate contentPreview for pinned topics across all listings using main post -> sourceContent -> teaser fallback
+	try {
+		const pinned = filteredTopics.filter(t => t && t.pinned);
+		if (pinned.length) {
+			const pinnedTids = pinned.map(t => String(t.tid));
+			const showPreviewFlags = await Topics.getTopicsFields(pinnedTids, ['showPreview']);
+			const tidToShow = {};
+			showPreviewFlags.forEach((obj, i) => {
+				const tid = pinnedTids[i];
+				tidToShow[tid] = obj && Object.prototype.hasOwnProperty.call(obj, 'showPreview') ? Number(obj.showPreview) !== 0 : true;
+			});
+
+			const mainPosts = await Topics.getMainPosts(pinnedTids, uid);
+			const tidToPreview = {};
+			mainPosts.forEach((post) => {
+				if (!post) { return; }
+				let content = '';
+				if (post.content && String(post.content).trim().length) {
+					content = String(post.content);
+				} else if (post.sourceContent && String(post.sourceContent).trim().length) {
+					content = String(post.sourceContent);
+				}
+				if (content) {
+					const text = utils.stripHTMLTags(content, utils.stripTags).trim();
+					const max = 500;
+					tidToPreview[String(post.tid)] = text.length ? (text.length > max ? (text.slice(0, max) + '...') : text) : null;
+				}
+			});
+
+			filteredTopics.forEach((topic) => {
+				if (!topic || !topic.pinned) { return; }
+				const tidKey = String(topic.tid);
+				if (tidToShow[tidKey]) {
+					let preview = tidToPreview[tidKey];
+					if (!preview && topic.teaser && topic.teaser.content) {
+						const t = String(topic.teaser.content);
+						const text = utils.stripHTMLTags(t, utils.stripTags).trim();
+						preview = text.length ? (text.length > 500 ? (text.slice(0, 500) + '...') : text) : null;
+					}
+					if (preview === undefined || preview === null || preview === '') {
+						// Ensure UI never shows an empty block
+						topic.contentPreview = 'No preview available';
+					} else {
+						topic.contentPreview = preview;
+					}
+					topic.showPreview = true;
+				} else {
+					topic.showPreview = false;
+				}
+			});
+		}
+	} catch (e) {
+		// Non-fatal; do not break topic rendering on preview generation failures
+	}
+
 	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid: uid });
 	return hookResult.topics;
 };

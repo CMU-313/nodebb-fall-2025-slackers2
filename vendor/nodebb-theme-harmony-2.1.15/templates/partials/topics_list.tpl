@@ -32,12 +32,14 @@
 					{{{ end }}}
 				</h3>
 				{{{ if ./pinned }}}
-				<div class="topic-content-preview alert alert-info mt-2 mb-0 p-2 text-break w-100">
-    				{{{ if ./contentPreview }}}
-            	{{ ./contentPreview }}
-        		{{{ else }}}
-            	No preview available
-        		{{{ end }}}
+				<div class="topic-content-preview alert alert-info mt-2 mb-0 p-2 text-break w-100 text-body {{{ if !./showPreview }}}hidden{{{ end }}}">
+		    		{{{ if ./showPreview }}}
+		    			{{{ if ./contentPreview }}}
+		        		{{ ./contentPreview }}
+		    			{{{ else }}}
+		        		No preview available
+		    			{{{ end }}}
+				{{{ end }}}
 				</div>
 				{{{ end }}}
 				<span component="topic/labels" class="d-flex flex-wrap gap-1 w-100">

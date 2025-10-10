@@ -61,25 +61,35 @@ define('forum/category/tools', [
 			return false;
 		});
 
-		// Toggle content preview for selected pinned topics
-		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', function () {
+		// Toggle content preview for selected pinned topics (persist via API)
+		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', async function () {
 			const tids = topicSelect.getSelectedTids();
 			if (!tids.length) {
 				return alerts.error('[[error:no-topics-selected]]');
 			}
-			const targets = [];
+			// Collect pinned topic rows that have a preview container
+			const rows = [];
 			tids.forEach((tid) => {
 				const row = $('[component="category/topic"][data-tid="' + tid + '"]');
-				if (!row.length || !row.hasClass('pinned')) { return; }
-				const preview = row.find('.topic-content-preview');
-				if (preview.length) { targets.push(preview); }
+				if (row.length && row.hasClass('pinned') && row.find('.topic-content-preview').length) {
+					rows.push({ tid, row, preview: row.find('.topic-content-preview') });
+				}
 			});
-			if (!targets.length) {
+			if (!rows.length) {
 				return alerts.error('No pinned topics with previews in selection');
 			}
-			const anyVisible = targets.some($el => $el.is(':visible') && !$el.hasClass('hidden'));
-			targets.forEach($el => $el.toggleClass('hidden', anyVisible));
-			closeDropDown();
+			// If any selected preview is visible, next state = hide all; else show all
+			const anyVisible = rows.some(({ preview }) => preview.is(':visible') && !preview.hasClass('hidden'));
+			const show = !anyVisible;
+			try {
+				await Promise.all(rows.map(({ tid }) => api.put(`/topics/${tid}/preview`, { show })));
+				// Reflect change immediately in UI
+				rows.forEach(({ preview }) => preview.toggleClass('hidden', !show ? true : false));
+				alerts.success(show ? 'Enabled content previews' : 'Disabled content previews');
+				closeDropDown();
+			} catch (err) {
+				alerts.error(err);
+			}
 			return false;
 		});
 
