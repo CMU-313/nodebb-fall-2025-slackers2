@@ -27,8 +27,11 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 			...config.headers,
 		},
 	};
-	if (timeout > 0) {
-		opts.signal = AbortSignal.timeout(timeout);
+	// Apply a default timeout to prevent hanging calls; use shorter default in CI/test
+	const defaultTimeout = (process.env.CI || process.env.NODE_ENV === 'test') ? 7000 : 15000;
+	const effectiveTimeout = Number.isFinite(timeout) ? timeout : defaultTimeout;
+	if (effectiveTimeout > 0) {
+		opts.signal = AbortSignal.timeout(effectiveTimeout);
 	}
 
 	if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
