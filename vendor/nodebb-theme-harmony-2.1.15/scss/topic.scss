@@ -116,6 +116,86 @@ body.template-topic {
 	[component="topic/thumb/list"] > a{
 		height: calc($font-size-base * 4);
 	}
+
+	// Poll styles
+	.poll-item {
+		.title a {
+			color: var(--bs-primary);
+			
+			&:hover {
+				color: var(--bs-primary-dark);
+			}
+		}
+	}
+	
+	.poll-container {
+		background-color: var(--bs-body-bg);
+		transition: $transition-fade;
+
+		[component="poll/toggle"] {
+			transition: $transition-fade;
+
+			&:hover {
+				background-color: var(--btn-ghost-hover-color);
+			}
+
+			i {
+				transition: transform 0.2s ease;
+			}
+		}
+
+		.poll-content {
+			transition: all 0.3s ease;
+
+			&.hidden {
+				display: none;
+			}
+		}
+
+		.poll-option {
+			position: relative;
+			background-color: var(--bs-body-bg);
+			transition: $transition-fade;
+			cursor: pointer;
+
+			&:hover {
+				background-color: mix($body-bg, $body-color, 95%);
+			}
+
+			&.poll-option-selected {
+				border-color: var(--bs-primary);
+				background-color: mix($body-bg, $primary, 95%);
+			}
+
+			.form-check-input {
+				cursor: pointer;
+			}
+
+			.form-check-label {
+				cursor: pointer;
+			}
+
+			.poll-option-bar-container {
+				position: relative;
+				height: 4px;
+				background-color: mix($body-bg, $body-color, 90%);
+				border-radius: 2px;
+				overflow: hidden;
+				margin-top: 0.5rem;
+				margin-bottom: 0.25rem;
+			}
+
+			.poll-option-bar {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				background: linear-gradient(90deg, var(--bs-primary), lighten($primary, 10%));
+				transition: width 0.5s ease;
+				border-radius: 2px;
+			}
+		}
+	}
 }
 
 @include media-breakpoint-up(lg) {
