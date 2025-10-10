@@ -21,7 +21,11 @@
 	</li>
 
 	<li>
+<<<<<<< HEAD
 		<a component="topic/toggle-preview" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" onclick="(function(e){e.preventDefault();var p=document.querySelectorAll('.topic-content-preview');if(!p.length){return false;}if(!document.getElementById('nbb-hide-pinned-previews-style')){var s=document.createElement('style');s.id='nbb-hide-pinned-previews-style';s.textContent='.hide-pinned-previews .topic-content-preview{display:none !important;}';document.head.appendChild(s);}var anyVisible=Array.prototype.some.call(p,function(el){return el.offsetParent!==null;});document.body.classList.toggle('hide-pinned-previews', anyVisible);return false;})(event);">
+=======
+		<a component="topic/toggle-preview" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem">
+>>>>>>> 3caf6d8 (feat: implemented frontend for toggling pinned topic content previews (Topic Tool))
 			<i class="fa fa-fw fa-eye text-secondary"></i> Toggle content preview
 		</a>
 	</li>

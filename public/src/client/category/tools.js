@@ -61,6 +61,7 @@ define('forum/category/tools', [
 			return false;
 		});
 
+<<<<<<< HEAD
 		// Use delegation in case the tools dropdown is re-rendered after init
 		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', function () {
 			const previews = $('.topic-content-preview');
@@ -73,6 +74,26 @@ define('forum/category/tools', [
 			}
 			const anyVisible = previews.toArray().some(el => $(el).is(':visible'));
 			document.body.classList.toggle('hide-pinned-previews', anyVisible);
+=======
+		// Toggle content preview for selected pinned topics
+		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', function () {
+			const tids = topicSelect.getSelectedTids();
+			if (!tids.length) {
+				return alerts.error('[[error:no-topics-selected]]');
+			}
+			const targets = [];
+			tids.forEach((tid) => {
+				const row = $('[component="category/topic"][data-tid="' + tid + '"]');
+				if (!row.length || !row.hasClass('pinned')) { return; }
+				const preview = row.find('.topic-content-preview');
+				if (preview.length) { targets.push(preview); }
+			});
+			if (!targets.length) {
+				return alerts.error('No pinned topics with previews in selection');
+			}
+			const anyVisible = targets.some($el => $el.is(':visible') && !$el.hasClass('hidden'));
+			targets.forEach($el => $el.toggleClass('hidden', anyVisible));
+>>>>>>> 3caf6d8 (feat: implemented frontend for toggling pinned topic content previews (Topic Tool))
 			closeDropDown();
 			return false;
 		});
@@ -247,10 +268,19 @@ define('forum/category/tools', [
 
 		components.get('topic/merge').toggleClass('hidden', isAnyScheduled);
 
+<<<<<<< HEAD
 		// Show toggle preview if there are pinned topics at all (even if not selected)
 		// Show toggle if any preview blocks exist (covers pinned topics use case)
 		const anyPreviewBlocks = $('.topic-content-preview').length > 0;
 		components.get('topic/toggle-preview').toggleClass('hidden', !anyPreviewBlocks);
+=======
+		// Show toggle preview only if a selected topic is pinned and has a preview
+		const showToggle = tids.some((tid) => {
+			const row = getTopicEl(tid);
+			return row && row.hasClass('pinned') && row.find('.topic-content-preview').length;
+		});
+		components.get('topic/toggle-preview').toggleClass('hidden', !showToggle);
+>>>>>>> 3caf6d8 (feat: implemented frontend for toggling pinned topic content previews (Topic Tool))
 	}
 
 	function isAny(method, tids) {
