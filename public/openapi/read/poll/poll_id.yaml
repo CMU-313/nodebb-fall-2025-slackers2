@@ -1,0 +1,33 @@
+get:
+  tags:
+    - polls
+  summary: get poll data
+  parameters:
+    - name: poll_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  responses:
+    '200':
+      description: poll data retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/PollObject.yaml#/PollObject
+    '400':
+      $ref: ../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../components/responses/500.yaml#/500

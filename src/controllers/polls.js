@@ -38,6 +38,12 @@ pollsController.view = async function (req, res, next) {
 			voteCount: await Polls.getVoteCount(pollId),
 		};
 
+		// Handle API requests
+		if (res.locals.isAPI) {
+			return helpers.formatApiResponse(200, res, poll);
+		}
+
+		// Handle page rendering
 		const data = {
 			title: poll.title,
 			poll: poll,
