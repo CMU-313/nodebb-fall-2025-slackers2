@@ -13,6 +13,11 @@ define('forum/category/tools', [
 	const CategoryTools = {};
 
 	CategoryTools.init = function () {
+		/* Debug instrumentation for toggle preview feature */
+		try {
+			console.log('[TogglePreview][init] Start init. Found preview blocks:', $('.topic-content-preview').length);
+			console.log('[TogglePreview][init] Toggle button present?', $('[component="topic/toggle-preview"]').length > 0);
+		} catch (e) { /* noop */ }
 		topicSelect.init(updateDropdownOptions);
 
 		handlePinnedTopicSort();
@@ -53,6 +58,28 @@ define('forum/category/tools', [
 
 		components.get('topic/unpin').on('click', function () {
 			categoryCommand('del', '/pin', 'unpin', onCommandComplete);
+			return false;
+		});
+
+		// Toggle content preview for selected pinned topics
+		$(document).off('click.topicTogglePreview').on('click.topicTogglePreview', '[component="topic/toggle-preview"]', function () {
+			const tids = topicSelect.getSelectedTids();
+			if (!tids.length) {
+				return alerts.error('[[error:no-topics-selected]]');
+			}
+			const targets = [];
+			tids.forEach((tid) => {
+				const row = $('[component="category/topic"][data-tid="' + tid + '"]');
+				if (!row.length || !row.hasClass('pinned')) { return; }
+				const preview = row.find('.topic-content-preview');
+				if (preview.length) { targets.push(preview); }
+			});
+			if (!targets.length) {
+				return alerts.error('No pinned topics with previews in selection');
+			}
+			const anyVisible = targets.some($el => $el.is(':visible') && !$el.hasClass('hidden'));
+			targets.forEach($el => $el.toggleClass('hidden', anyVisible));
+			closeDropDown();
 			return false;
 		});
 
@@ -225,6 +252,13 @@ define('forum/category/tools', [
 		components.get('topic/unpin').toggleClass('hidden', areAllScheduled || !isAnyPinned);
 
 		components.get('topic/merge').toggleClass('hidden', isAnyScheduled);
+
+		// Show toggle preview only if a selected topic is pinned and has a preview
+		const showToggle = tids.some((tid) => {
+			const row = getTopicEl(tid);
+			return row && row.hasClass('pinned') && row.find('.topic-content-preview').length;
+		});
+		components.get('topic/toggle-preview').toggleClass('hidden', !showToggle);
 	}
 
 	function isAny(method, tids) {
