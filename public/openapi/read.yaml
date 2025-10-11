@@ -368,3 +368,5 @@ paths:
     $ref: 'read/ap.yaml'
   /api/outgoing:
     $ref: 'read/outgoing.yaml'
+  "/api/poll/{poll_id}":
+    $ref: 'read/poll/poll_id.yaml'
