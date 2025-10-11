@@ -1,8 +1,12 @@
 <ul component="category" class="topics-list list-unstyled" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}" data-set="{set}">
 
 	{{{ each topics }}}
-	<li component="category/topic" class="category-item hover-parent border-bottom py-3 py-lg-4 d-flex flex-column flex-lg-row align-items-start {function.generateTopicClass}" <!-- IMPORT partials/data/category.tpl -->>
+	<li component="category/topic" class="category-item hover-parent border-bottom py-3 py-lg-4 d-flex flex-column flex-lg-row align-items-start {function.generateTopicClass}{{{ if ./isPoll }}} poll-item{{{ end }}}" <!-- IMPORT partials/data/category.tpl -->>
+		{{{ if ./isPoll }}}
+		<link itemprop="url" content="{config.relative_path}/poll/{./pollId}" />
+		{{{ else }}}
 		<link itemprop="url" content="{config.relative_path}/topic/{./slug}" />
+		{{{ end }}}
 		<meta itemprop="name" content="{function.stripTags, ./title}" />
 		<meta itemprop="itemListOrder" content="descending" />
 		<meta itemprop="position" content="{increment(./index, "1")}" />
@@ -28,15 +32,21 @@
 			</div>
 			<div class="flex-grow-1 d-flex flex-wrap gap-1 position-relative">
 				<h3 component="topic/header" class="title text-break fs-5 fw-semibold m-0 tracking-tight w-100 {{{ if showSelect }}}me-4 me-lg-0{{{ end }}}">
-					<a class="text-reset" href="{{{ if topics.noAnchor }}}#{{{ else }}}{config.relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}{{{ end }}}">{./title}</a>
+					{{{ if ./isPoll }}}
+					<a class="text-reset" href="{config.relative_path}/poll/{./pollId}"><i class="fa fa-poll text-primary me-2"></i>{./title}</a>
+					{{{ else }}}
+					<a class="text-reset" href="{{{ if topics.noAnchor }}}#{{{ else }}}{config.relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}{{{ end }}}}">{./title}</a>
+					{{{ end }}}
 				</h3>
 				{{{ if ./pinned }}}
-				<div class="topic-content-preview alert alert-info mt-2 mb-0 p-2 text-break w-100">
-    				{{{ if ./contentPreview }}}
-            	{{ ./contentPreview }}
-        		{{{ else }}}
-            	No preview available
-        		{{{ end }}}
+				<div class="topic-content-preview alert alert-info mt-2 mb-0 p-2 text-break w-100 text-body {{{ if !./showPreview }}}hidden{{{ end }}}">
+		    		{{{ if ./showPreview }}}
+		    			{{{ if ./contentPreview }}}
+		        		{{ ./contentPreview }}
+		    			{{{ else }}}
+		        		No preview available
+		    			{{{ end }}}
+				{{{ end }}}
 				</div>
 				{{{ end }}}
 				<span component="topic/labels" class="d-flex flex-wrap gap-1 w-100">
@@ -112,8 +122,8 @@
 				{{{ end }}}
 				<div class="stats-postcount card card-header border-0 p-2 overflow-hidden rounded-1 d-flex flex-column align-items-center">
 					<span class="fs-5 ff-secondary lh-1" title="{./postcount}">{humanReadableNumber(./postcount, 0)}</span>
-					<span class="d-none d-xl-flex text-lowercase text-xs">[[global:posts]]</span>
-					<i class="d-xl-none fa-regular fa-fw text-xs text-muted opacity-75 fa-message"></i>
+					<span class="d-none d-xl-flex text-lowercase text-xs">{{{ if ./isPoll }}}[[polls:votes]]{{{ else }}}[[global:posts]]{{{ end }}}</span>
+					<i class="d-xl-none fa-regular fa-fw text-xs text-muted opacity-75 {{{ if ./isPoll }}}fa-poll{{{ else }}}fa-message{{{ end }}}"></i>
 				</div>
 				<div class="stats-viewcount card card-header border-0 p-2 overflow-hidden rounded-1 d-flex flex-column align-items-center">
 					<span class="fs-5 ff-secondary lh-1" title="{./viewcount}">{humanReadableNumber(./viewcount, 0)}</span>
@@ -123,6 +133,15 @@
 			</div>
 			<div component="topic/teaser" class="meta teaser ps-5 ps-lg-0 col-lg-6 col-12 {{{ if !config.theme.mobileTopicTeasers }}}d-none d-lg-block{{{ end }}}">
 				<div class="lastpost border-start border-2 lh-sm h-100 d-flex flex-column gap-1" style="border-color: {./category.bgColor}!important;">
+					{{{ if ./isPoll }}}
+					<div class="ps-2 text-xs">
+						<span class="badge bg-primary text-white">{{{ if ./pollData }}}{./pollData.options.length}{{{ else }}}5{{{ end }}} options</span>
+					</div>
+					<div class="post-content text-xs ps-2 line-clamp-sm-2 lh-sm text-break position-relative flex-fill">
+						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/poll/{./pollId}" aria-label="[[polls:view-poll]]"></a>
+						{./teaser.content}
+					</div>
+					{{{ else }}}
 					{{{ if ./unreplied }}}
 					<div class="ps-2 text-xs">
 						[[category:no-replies]]
@@ -137,6 +156,7 @@
 						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/topic/{./slug}/{./teaser.index}" aria-label="[[global:lastpost]]"></a>
 						{./teaser.content}
 					</div>
+					{{{ end }}}
 					{{{ end }}}
 					{{{ end }}}
 				</div>

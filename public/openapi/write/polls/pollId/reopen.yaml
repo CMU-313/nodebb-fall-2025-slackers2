@@ -1,0 +1,46 @@
+post:
+  tags:
+    - polls
+  summary: reopen poll
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            endDate:
+              type: number
+              example: 1641081600000
+              description: Unix timestamp when the poll should close again
+  responses:
+    '200':
+      description: poll reopened
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  message:
+                    type: string
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../../components/responses/500.yaml#/500

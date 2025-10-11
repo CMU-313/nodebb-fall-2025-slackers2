@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const events = require('../events');
 const batch = require('../batch');
 const activitypub = require('../activitypub');
+const plugins = require('../plugins');
 
 const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
@@ -362,4 +363,25 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 	}, { batch: 10 });
 
 	await categories.onTopicsMoved(cids);
+};
+	
+// Set per-topic showPreview flag (admins/mods only)
+topicsAPI.setShowPreview = async function (caller, { tid, show }) {
+	if (typeof show === 'undefined' || (show !== true && show !== false && show !== '1' && show !== '0' && show !== 1 && show !== 0)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const isAdminOrMod = await privileges.topics.isAdminOrMod(tid, caller.uid);
+	if (!isAdminOrMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const value = (show === true || show === '1' || show === 1) ? 1 : 0;
+	await topics.setTopicField(tid, 'showPreview', value);
+
+	// Fire plugin hook for others to react
+	const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'uid']);
+	plugins.hooks.fire('action:topic.setShowPreview', { topic: topicData, uid: caller.uid, value });
+
+	return { tid, show: !!value };
 };

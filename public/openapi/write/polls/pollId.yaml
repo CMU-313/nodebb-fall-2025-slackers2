@@ -1,0 +1,111 @@
+get:
+  tags:
+    - polls
+  summary: get poll data
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  responses:
+    '200':
+      description: poll data retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/PollObject.yaml#/PollObject
+    '400':
+      $ref: ../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../components/responses/500.yaml#/500
+put:
+  tags:
+    - polls
+  summary: update poll
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              example: "Updated poll title"
+            endDate:
+              type: number
+              example: 1641081600000
+  responses:
+    '200':
+      description: poll updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/PollObject.yaml#/PollObject
+    '400':
+      $ref: ../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../components/responses/500.yaml#/500
+delete:
+  tags:
+    - polls
+  summary: delete poll
+  parameters:
+    - name: pollId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "1"
+  responses:
+    '200':
+      description: poll deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      $ref: ../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../components/responses/403.yaml#/403
+    '404':
+      $ref: ../../components/responses/404.yaml#/404
+    '500':
+      $ref: ../../components/responses/500.yaml#/500
