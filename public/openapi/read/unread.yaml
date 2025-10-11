@@ -191,6 +191,9 @@ get:
                               type: array
                               items:
                                 type: string
+                            isAnonymous:
+                              type: boolean
+                              description: Whether the topic is anonymous (true) or not (false)
                             index:
                               type: number
                   topicCount:

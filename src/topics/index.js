@@ -94,19 +94,28 @@ Topics.getTopicsByTids = async function (tids, options) {
 			return data;
 		}
 
-		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs] = await Promise.all([
+		const mainPids = topics.map(t => t && t.mainPid);
+		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs, mainPostAnonFlags] = await Promise.all([
 			Topics.getTeasers(topics, options),
 			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
 			Topics.thumbs.load(topics),
+			posts.getPostsFields(mainPids, ['anonymous']),
 		]);
 
 		users.forEach((userObj, idx) => {
 			// Hide fullname if needed
 			if (!userSettings[idx].showfullname) {
 				userObj.fullname = undefined;
+			}
+		});
+
+		const tidToAnonymous = {};
+		mainPostAnonFlags.forEach((post, idx) => {
+			if (topics[idx] && post) {
+				tidToAnonymous[topics[idx].tid] = parseInt(post.anonymous, 10) === 1;
 			}
 		});
 
@@ -117,6 +126,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			categoriesMap: _.zipObject(cids, categoriesData),
 			tidToGuestHandle: _.zipObject(guestTopics.map(t => t.tid), guestHandles),
 			thumbs,
+			tidToAnonymous,
 		};
 	}
 
@@ -133,7 +143,15 @@ Topics.getTopicsByTids = async function (tids, options) {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
 			topic.category = result.categoriesMap[topic.cid];
-			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
+			const baseUser = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
+			const isAnonymous = !!result.tidToAnonymous[topic.tid];
+			topic.isAnonymous = isAnonymous;
+			topic.user = isAnonymous ? { uid: 0, username: 'Anonymous', displayname: 'Anonymous' } : baseUser;
+			if (isAnonymous) {
+				// Ensure no profile link or avatar specifics leak in list
+				delete topic.user.userslug;
+				delete topic.user.picture;
+			}
 			if (result.tidToGuestHandle[topic.tid]) {
 				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
 				topic.user.displayname = topic.user.username;

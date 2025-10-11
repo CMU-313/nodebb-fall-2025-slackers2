@@ -399,6 +399,8 @@ helpers.setCategoryTeaser = function (category) {
 			index: post.index,
 			topic: post.topic,
 			user: post.user,
+			anonymous: post.anonymous,
+			isAnonymous: post.isAnonymous,
 		};
 	}
 };

@@ -173,6 +173,12 @@ TopicObject:
           items:
             type: string
             description: HTML injected into the theme
+        isAnonymous:
+          type: boolean
+          description: Whether the topic is anonymous (true) or not (false)
+        showPreview:
+          type: number
+          description: Whether to show preview content for this topic (1 = true, 0 = false)
     - type: object
       description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
       properties:
@@ -189,13 +195,6 @@ TopicObject:
           description: "`pinExpiry` rendered as an ISO 8601 format"
         index:
           type: number
-        showPreview:
-          type: boolean
-          description: Whether the topic's pinned preview should be shown
-        contentPreview:
-          type: string
-          nullable: true
-          description: Sanitized preview content for the topic's first post
       required:
         - tid
 TopicObjectSlim:
@@ -295,11 +294,7 @@ TopicObjectSlim:
           type: number
           description: The number of thumbnails associated with this topic
         showPreview:
-          type: boolean
-          description: Whether the topic's pinned preview should be shown
-        contentPreview:
-          type: string
-          nullable: true
-          description: Sanitized preview content for the topic's first post
+          type: number
+          description: Whether to show preview content for this topic (1 = true, 0 = false)
       required:
         - tid

@@ -37,6 +37,16 @@ describe('API', async () => {
 	let setup = false;
 	const unauthenticatedRoutes = ['/api/login', '/api/register']; // Everything else will be called with the admin user
 
+	before(async () => {
+		// Attach an emailer hook so related requests do not error
+		plugins.hooks.register('emailer-test', {
+			hook: 'static:email.send',
+			method: async () => {
+				// pretend to handle sending emails
+			},
+		});
+	});
+
 	const mocks = {
 		head: {},
 		get: {
@@ -169,9 +179,6 @@ describe('API', async () => {
 
 	async function dummySearchHook(data) {
 		return [1];
-	}
-	async function dummyEmailerHook(data) {
-		// pretend to handle sending emails
 	}
 
 	after(async () => {
@@ -313,11 +320,6 @@ describe('API', async () => {
 		plugins.hooks.register('core', {
 			hook: 'filter:search.query',
 			method: dummySearchHook,
-		});
-		// Attach an emailer hook so related requests do not error
-		plugins.hooks.register('emailer-test', {
-			hook: 'static:email.send',
-			method: dummyEmailerHook,
 		});
 
 		// All tests run as admin user

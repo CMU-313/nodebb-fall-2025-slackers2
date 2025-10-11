@@ -49,8 +49,6 @@ tags:
     description: Administrative calls
   - name: files
     description: File upload routes
-  - name: polls
-    description: Poll-related operations
 paths:
   /ping:
     $ref: 'write/ping.yaml'

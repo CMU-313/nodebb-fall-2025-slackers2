@@ -19,6 +19,9 @@ Topics.get = async (req, res) => {
 };
 
 Topics.create = async (req, res) => {
+	console.log('DEBUG: Topics.create controller called');
+	console.log('DEBUG: Request body:', JSON.stringify(req.body, null, 2));
+	
 	const id = await lockPosting(req, '[[error:already-posting]]');
 	try {
 		const payload = await api.topics.create(req, req.body);

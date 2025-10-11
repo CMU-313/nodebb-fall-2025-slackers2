@@ -43,7 +43,7 @@ module.exports = function (Topics) {
 		});
 
 		const [allPostData, callerSettings] = await Promise.all([
-			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent']),
+			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent', 'anonymous']),
 			user.getSettings(uid),
 		]);
 		let postData = allPostData.filter(post => post && post.pid);
@@ -64,7 +64,13 @@ module.exports = function (Topics) {
 				post.uid = 0;
 			}
 
-			post.user = users[post.uid];
+			const isAnonymous = parseInt(post.anonymous, 10) === 1;
+			post.isAnonymous = isAnonymous;
+			post.user = isAnonymous ? { uid: 0, username: 'Anonymous', displayname: 'Anonymous' } : users[post.uid];
+			if (isAnonymous) {
+				delete post.user.userslug;
+				delete post.user.picture;
+			}
 			post.timestampISO = utils.toISOString(post.timestamp);
 			tidToPost[post.tid] = post;
 		});
