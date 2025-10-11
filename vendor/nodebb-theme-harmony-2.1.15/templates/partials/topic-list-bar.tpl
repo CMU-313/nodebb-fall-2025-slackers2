@@ -38,13 +38,11 @@
 			<div class="d-flex gap-1 align-items-center">
 				{{{ if (template.category || template.world) }}}
 					{{{ if privileges.topics:create }}}
-					<!-- IMPORT partials/buttons/anonymousToggle.tpl -->
 					<a href="{config.relative_path}/compose?cid={cid}" component="category/post" id="new_topic" class="btn btn-primary btn-sm text-nowrap" data-ajaxify="false" role="button">[[category:new-topic-button]]</a>
 					<a href="{config.relative_path}/poll?cid={cid}" class="btn btn-primary btn-sm text-nowrap" id="new_poll" role="button" data-ajaxify="false">[[category:new-poll-button]]</a>
 					{{{ end }}}
 				{{{ else }}}
 					{{{ if canPost }}}
-					<!-- IMPORT partials/buttons/anonymousToggle.tpl -->
 					<!-- IMPORT partials/buttons/newTopic.tpl -->
 					{{{ end }}}
 				{{{ end }}}

@@ -1,0 +1,17 @@
+{
+	"toggle-poll": "Toggle poll visibility",
+	"vote": "vote",
+	"votes": "votes",
+	"submit-vote": "Submit Vote",
+	"change-vote": "Change Vote",
+	"remove-vote": "Remove Vote",
+	"vote-submitted": "Your vote has been submitted successfully",
+	"vote-removed": "Your vote has been removed",
+	"no-poll-option-selected": "Please select an option before voting",
+	"vote-failed": "Failed to submit vote. Please try again.",
+	"unvote-failed": "Failed to remove vote. Please try again.",
+	"poll": "Poll",
+	"view-poll": "View Poll",
+	"cannot-vote": "You cannot vote on this poll"
+}
+

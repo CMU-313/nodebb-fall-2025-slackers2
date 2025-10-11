@@ -13,7 +13,14 @@ module.exports = function () {
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 
-	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
+	setupApiRoute(router, 'post', '/', [
+		middleware.checkRequired.bind(null, ['cid', 'title', 'content']),
+		(req, res, next) => {
+			console.log('DEBUG: Topics route middleware - Request received');
+			console.log('DEBUG: Topics route middleware - Body:', JSON.stringify(req.body, null, 2));
+			next();
+		},
+	], controllers.write.topics.create);
 	setupApiRoute(router, 'get', '/:tid', [], controllers.write.topics.get);
 	setupApiRoute(router, 'post', '/:tid', [middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
@@ -22,7 +29,9 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:tid/state', [...middlewares], controllers.write.topics.delete);
 
 	setupApiRoute(router, 'put', '/:tid/pin', [...middlewares, middleware.assert.topic], controllers.write.topics.pin);
-	setupApiRoute(router, 'delete', '/:tid/pin', [...middlewares], controllers.write.topics.unpin);
+	setupApiRoute(router, 'delete', '/:tid/pin', [...middlewares, middleware.assert.topic], controllers.write.topics.unpin);
+
+	setupApiRoute(router, 'put', '/:tid/preview', [...middlewares, middleware.assert.topic], controllers.write.topics.setShowPreview);
 
 	setupApiRoute(router, 'put', '/:tid/lock', [...middlewares], controllers.write.topics.lock);
 	setupApiRoute(router, 'delete', '/:tid/lock', [...middlewares], controllers.write.topics.unlock);

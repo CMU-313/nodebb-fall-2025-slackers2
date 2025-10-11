@@ -23,6 +23,9 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/topic/teaser/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.teaser));
 	router.get('/topic/pagination/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.pagination));
 	router.get('/poll', [...middlewares], helpers.tryRoute(controllers.poll.getApi));
+	
+	// Poll read API
+	router.get('/poll/:poll_id', [...middlewares], helpers.tryRoute(controllers.polls.view));
 
 	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();

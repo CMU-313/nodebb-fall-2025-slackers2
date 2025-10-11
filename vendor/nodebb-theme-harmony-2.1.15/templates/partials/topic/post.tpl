@@ -9,6 +9,7 @@
 <!-- IMPORT partials/topic/post-parent.tpl -->
 {{{ end }}}
 <div class="d-flex align-items-start gap-3 post-container-parent">
+	{{{ if !posts.anonymous }}}
 	<div class="bg-body d-none d-sm-block rounded-circle" style="outline: 2px solid var(--bs-body-bg);">
 		<a class="d-inline-block position-relative text-decoration-none" href="{{{ if ./user.userslug }}}{config.relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}" aria-label="[[aria:profile-page-for, {./user.displayname}]]">
 			{buildAvatar(posts.user, "48px", true, "", "user/picture")}
@@ -22,13 +23,27 @@
 			{{{ end }}}
 		</a>
 	</div>
+	{{{ else }}}
+	<div class="bg-body d-none d-sm-block rounded-circle" style="outline: 2px solid var(--bs-body-bg);">
+		<div class="d-inline-block position-relative text-decoration-none" aria-label="Anonymous user">
+			<div class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width: 48px; height: 48px;">
+				<i class="fa fa-user-secret"></i>
+			</div>
+		</div>
+	</div>
+	{{{ end }}}
 	<div class="post-container d-flex gap-2 flex-grow-1 flex-column w-100" style="min-width:0;">
 		<div class="d-flex align-items-start justify-content-between gap-1 flex-nowrap w-100 post-header" itemprop="author" itemscope itemtype="https://schema.org/Person">
 			<div class="d-flex gap-1 flex-wrap align-items-center text-truncate">
+				{{{ if !posts.anonymous }}}
 				<meta itemprop="name" content="{./user.displayname}">
 				{{{ if ./user.userslug }}}<meta itemprop="url" content="{config.relative_path}/user/{./user.userslug}">{{{ end }}}
+				{{{ else }}}
+				<meta itemprop="name" content="Anonymous">
+				{{{ end }}}
 
 				<div class="d-flex flex-nowrap gap-1 align-items-center text-truncate">
+					{{{ if !posts.anonymous }}}
 					<div class="bg-body d-sm-none">
 						<a class="d-inline-block position-relative text-decoration-none" href="{{{ if ./user.userslug }}}{config.relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}">
 							{buildAvatar(posts.user, "20px", true, "", "user/picture")}
@@ -44,6 +59,19 @@
 					</div>
 
 					<a class="fw-bold text-nowrap text-truncate" href="{{{ if ./user.userslug }}}{config.relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}" data-username="{posts.user.username}" data-uid="{posts.user.uid}">{posts.user.displayname}</a>
+					{{{ else }}}
+					<div class="bg-body d-sm-none">
+						<div class="d-inline-block position-relative text-decoration-none">
+							<div class="d-flex align-items-center justify-content-center bg-secondary text-white rounded-circle" style="width: 20px; height: 20px;">
+								<i class="fa fa-user-secret" style="font-size: 10px;"></i>
+							</div>
+						</div>
+					</div>
+
+					<span class="fw-bold text-nowrap text-truncate text-muted">
+						<i class="fa fa-user-secret me-1"></i>Anonymous
+					</span>
+					{{{ end }}}
 				</div>
 
 				{{{ each posts.user.selectedGroups }}}
@@ -81,7 +109,9 @@
 		</div>
 
 		<div class="content text-break" component="post/content" itemprop="text">
+
 			{posts.content}
+
 		</div>
 
 		<div component="post/footer" class="post-footer border-bottom pb-2">

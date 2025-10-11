@@ -94,19 +94,28 @@ Topics.getTopicsByTids = async function (tids, options) {
 			return data;
 		}
 
-		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs] = await Promise.all([
+		const mainPids = topics.map(t => t && t.mainPid);
+		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs, mainPostAnonFlags] = await Promise.all([
 			Topics.getTeasers(topics, options),
 			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
 			Topics.thumbs.load(topics),
+			posts.getPostsFields(mainPids, ['anonymous']),
 		]);
 
 		users.forEach((userObj, idx) => {
 			// Hide fullname if needed
 			if (!userSettings[idx].showfullname) {
 				userObj.fullname = undefined;
+			}
+		});
+
+		const tidToAnonymous = {};
+		mainPostAnonFlags.forEach((post, idx) => {
+			if (topics[idx] && post) {
+				tidToAnonymous[topics[idx].tid] = parseInt(post.anonymous, 10) === 1;
 			}
 		});
 
@@ -117,6 +126,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			categoriesMap: _.zipObject(cids, categoriesData),
 			tidToGuestHandle: _.zipObject(guestTopics.map(t => t.tid), guestHandles),
 			thumbs,
+			tidToAnonymous,
 		};
 	}
 
@@ -133,7 +143,15 @@ Topics.getTopicsByTids = async function (tids, options) {
 		if (topic) {
 			topic.thumbs = result.thumbs[i];
 			topic.category = result.categoriesMap[topic.cid];
-			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
+			const baseUser = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
+			const isAnonymous = !!result.tidToAnonymous[topic.tid];
+			topic.isAnonymous = isAnonymous;
+			topic.user = isAnonymous ? { uid: 0, username: 'Anonymous', displayname: 'Anonymous' } : baseUser;
+			if (isAnonymous) {
+				// Ensure no profile link or avatar specifics leak in list
+				delete topic.user.userslug;
+				delete topic.user.picture;
+			}
 			if (result.tidToGuestHandle[topic.tid]) {
 				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
 				topic.user.displayname = topic.user.username;
@@ -153,6 +171,61 @@ Topics.getTopicsByTids = async function (tids, options) {
 	});
 
 	const filteredTopics = result.topics.filter(topic => topic && topic.category && !topic.category.disabled);
+
+	// Populate contentPreview for pinned topics across all listings using main post -> sourceContent -> teaser fallback
+	try {
+		const pinned = filteredTopics.filter(t => t && t.pinned);
+		if (pinned.length) {
+			const pinnedTids = pinned.map(t => String(t.tid));
+			const showPreviewFlags = await Topics.getTopicsFields(pinnedTids, ['showPreview']);
+			const tidToShow = {};
+			showPreviewFlags.forEach((obj, i) => {
+				const tid = pinnedTids[i];
+				tidToShow[tid] = obj && Object.prototype.hasOwnProperty.call(obj, 'showPreview') ? Number(obj.showPreview) !== 0 : true;
+			});
+
+			const mainPosts = await Topics.getMainPosts(pinnedTids, uid);
+			const tidToPreview = {};
+			mainPosts.forEach((post) => {
+				if (!post) { return; }
+				let content = '';
+				if (post.content && String(post.content).trim().length) {
+					content = String(post.content);
+				} else if (post.sourceContent && String(post.sourceContent).trim().length) {
+					content = String(post.sourceContent);
+				}
+				if (content) {
+					const text = utils.stripHTMLTags(content, utils.stripTags).trim();
+					const max = 500;
+					tidToPreview[String(post.tid)] = text.length ? (text.length > max ? (text.slice(0, max) + '...') : text) : null;
+				}
+			});
+
+			filteredTopics.forEach((topic) => {
+				if (!topic || !topic.pinned) { return; }
+				const tidKey = String(topic.tid);
+				if (tidToShow[tidKey]) {
+					let preview = tidToPreview[tidKey];
+					if (!preview && topic.teaser && topic.teaser.content) {
+						const t = String(topic.teaser.content);
+						const text = utils.stripHTMLTags(t, utils.stripTags).trim();
+						preview = text.length ? (text.length > 500 ? (text.slice(0, 500) + '...') : text) : null;
+					}
+					if (preview === undefined || preview === null || preview === '') {
+						// Ensure UI never shows an empty block
+						topic.contentPreview = 'No preview available';
+					} else {
+						topic.contentPreview = preview;
+					}
+					topic.showPreview = true;
+				} else {
+					topic.showPreview = false;
+				}
+			});
+		}
+	} catch (e) {
+		// Non-fatal; do not break topic rendering on preview generation failures
+	}
 
 	const hookResult = await plugins.hooks.fire('filter:topics.get', { topics: filteredTopics, uid: uid });
 	return hookResult.topics;

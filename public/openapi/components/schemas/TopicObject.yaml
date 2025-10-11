@@ -173,6 +173,12 @@ TopicObject:
           items:
             type: string
             description: HTML injected into the theme
+        isAnonymous:
+          type: boolean
+          description: Whether the topic is anonymous (true) or not (false)
+        showPreview:
+          type: number
+          description: Whether to show preview content for this topic (1 = true, 0 = false)
     - type: object
       description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
       properties:
@@ -287,5 +293,8 @@ TopicObjectSlim:
         numThumbs:
           type: number
           description: The number of thumbnails associated with this topic
+        showPreview:
+          type: number
+          description: Whether to show preview content for this topic (1 = true, 0 = false)
       required:
         - tid

@@ -603,7 +603,8 @@ ActivityPub.probe = async ({ uid, url }) => {
 	}
 	try {
 		probeRateLimit.set(uid, true);
-		return await checkHeader(meta.config.activitypubProbeTimeout || 2000);
+		const defaultTimeout = (process.env.CI || process.env.NODE_ENV === 'test') ? 700 : 2000;
+		return await checkHeader(meta.config.activitypubProbeTimeout || defaultTimeout);
 	} catch (e) {
 		if (e.name === 'TimeoutError') {
 			// Return early but retry for caching purposes

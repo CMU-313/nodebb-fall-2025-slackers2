@@ -127,6 +127,12 @@ get:
                                                   type: string
                                                 title:
                                                   type: string
+                                            anonymous:
+                                              type: number
+                                              description: Whether the post is anonymous (1) or not (0)
+                                            isAnonymous:
+                                              type: boolean
+                                              description: Whether the post is anonymous (true) or not (false)
                                       imageClass:
                                         type: string
                                       timesClicked:
@@ -198,6 +204,12 @@ get:
                                         type: string
                                       title:
                                         type: string
+                                  anonymous:
+                                    type: number
+                                    description: Whether the post is anonymous (1) or not (0)
+                                  isAnonymous:
+                                    type: boolean
+                                    description: Whether the post is anonymous (true) or not (false)
                             teaser:
                               type: object
                               properties:
@@ -251,6 +263,12 @@ get:
                                       isLocal:
                                         type: boolean
                                         description: Whether the user belongs to the local installation or not.
+                                anonymous:
+                                  type: number
+                                  description: Whether the post is anonymous (1) or not (0)
+                                isAnonymous:
+                                  type: boolean
+                                  description: Whether the post is anonymous (true) or not (false)
                             imageClass:
                               type: string
               - $ref: ../components/schemas/Pagination.yaml#/Pagination

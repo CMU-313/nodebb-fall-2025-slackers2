@@ -1,0 +1,44 @@
+put:
+  tags:
+    - topics
+  summary: set topic preview visibility
+  description: This operation sets whether a pinned topic should display its content preview. Only admins and moderators may perform this action.
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            show:
+              type: boolean
+              description: Whether the topic's preview should be shown
+              example: true
+  responses:
+    '200':
+      description: Topic preview visibility updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                required:
+                  - tid
+                  - show
+                properties:
+                  tid:
+                    type: number
+                  show:
+                    type: boolean

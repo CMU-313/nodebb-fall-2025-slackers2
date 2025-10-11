@@ -49,8 +49,6 @@ tags:
     description: Administrative calls
   - name: files
     description: File upload routes
-  - name: polls
-    description: Poll-related operations
 paths:
   /ping:
     $ref: 'write/ping.yaml'
@@ -150,6 +148,8 @@ paths:
     $ref: 'write/topics/tid/lock.yaml'
   /topics/{tid}/pin:
     $ref: 'write/topics/tid/pin.yaml'
+  /topics/{tid}/preview:
+    $ref: 'write/topics/tid/preview.yaml'
   /topics/{tid}/follow:
     $ref: 'write/topics/tid/follow.yaml'
   /topics/{tid}/ignore:

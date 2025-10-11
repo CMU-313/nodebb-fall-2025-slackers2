@@ -39,12 +39,27 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/search', [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', [], controllers.termsOfUse);
+	setupPageRoute(app, '/poll/:poll_id', [], controllers.polls.view);
 
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
 	app.post('/poll', middleware.applyCSRF, controllers.poll.post);
+	// Log all POST requests to see what's being called
+	app.use((req, res, next) => {
+		if (req.method === 'POST') {
+			console.log('DEBUG: POST request to:', req.path);
+			console.log('DEBUG: POST body:', JSON.stringify(req.body, null, 2));
+		}
+		next();
+	});
+
+	app.post('/compose', middleware.applyCSRF, (req, res, next) => {
+		console.log('DEBUG: Composer route hit - POST /compose');
+		console.log('DEBUG: Composer route - Body:', JSON.stringify(req.body, null, 2));
+		controllers.composer.post(req, res, next);
+	});
 };
 
 _mounts.mod = (app, middleware, controllers) => {

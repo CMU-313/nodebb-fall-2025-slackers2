@@ -92,10 +92,5 @@ CategoryObject:
         backgroundImage:
           type: string
           description: Relative URL to the category's background image
-        tagWhitelist:
-          type: array
-          items:
-            type: string
-          description: List of tags that are whitelisted for this category
       required:
         - cid
