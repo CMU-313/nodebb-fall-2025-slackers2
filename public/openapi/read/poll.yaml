@@ -29,6 +29,10 @@ get:
                     - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
                     - type: object
                       properties:
+                        tagWhitelist:
+                          type: array
+                          items:
+                            type: string
                         selected:
                           type: boolean
                           description: True if this category is pre-selected (when cid query parameter matches)
