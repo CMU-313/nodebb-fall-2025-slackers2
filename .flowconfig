@@ -1,0 +1,35 @@
+[ignore]
+.*/node_modules/.*
+.*/build/.*
+.*/coverage/.*
+.*/logs/.*
+.*/public/uploads/.*
+.*/vendor/.*
+.*/test/.*
+.*\.tpl$
+.*\.scss$
+.*\.css$
+
+[include]
+./src/
+./public/src/
+./app.js
+./loader.js
+
+[libs]
+
+[lints]
+untyped-type-import=warn
+internal-type=warn
+unsafe-object-assign=warn
+nested-component=warn
+nested-hook=warn
+libdef-override=warn
+deprecated-type-bool=warn
+
+[options]
+module.name_mapper='^benchpressjs$' -> 'benchpressjs'
+module.name_mapper='^\.\./\.\./public/src' -> '<PROJECT_ROOT>/public/src'
+module.name_mapper='^\.\./\.\./src' -> '<PROJECT_ROOT>/src'
+
+[strict]
