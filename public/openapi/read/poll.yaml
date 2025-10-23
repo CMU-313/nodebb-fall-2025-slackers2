@@ -1,0 +1,40 @@
+get:
+  tags:
+    - polls
+  summary: Get poll creation data
+  description: >
+    This route retrieves the data needed for poll creation, including available categories
+    that the user can select from when creating a poll.
+  parameters:
+    - name: cid
+      in: query
+      description: Category ID to pre-select
+      required: false
+      schema:
+        type: integer
+      example: 1
+  responses:
+    "200":
+      description: Poll creation data including available categories
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              categories:
+                description: A collection of category data objects available for poll creation
+                type: array
+                items:
+                  allOf:
+                    - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                    - type: object
+                      properties:
+                        tagWhitelist:
+                          type: array
+                          items:
+                            type: string
+                        selected:
+                          type: boolean
+                          description: True if this category is pre-selected (when cid query parameter matches)
+    "500":
+      description: Internal Server Error

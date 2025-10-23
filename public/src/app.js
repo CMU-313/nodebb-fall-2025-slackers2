@@ -99,6 +99,11 @@ if (document.readyState === 'loading') {
 			app.newTopic();
 		});
 
+		$('body').on('click', '#new_poll', function () {
+			// Allow the poll button to work as a regular link
+			// The data-ajaxify="false" should handle this, but this ensures it works
+		});
+
 		registerServiceWorker();
 
 		require([

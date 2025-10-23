@@ -33,6 +33,7 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/register', loginRegisterMiddleware, controllers.register);
 	setupPageRoute(app, '/register/complete', [], controllers.registerInterstitial);
 	setupPageRoute(app, '/compose', [], controllers.composer.get);
+	setupPageRoute(app, '/poll', [], controllers.poll.get);
 	setupPageRoute(app, '/confirm/:code', [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', [], controllers.outgoing);
 	setupPageRoute(app, '/search', [], controllers.search.search);
@@ -43,6 +44,8 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
 
+	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/poll', middleware.applyCSRF, controllers.poll.post);
 	// Log all POST requests to see what's being called
 	app.use((req, res, next) => {
 		if (req.method === 'POST') {

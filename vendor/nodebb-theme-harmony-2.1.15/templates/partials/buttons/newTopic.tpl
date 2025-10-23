@@ -5,6 +5,10 @@
     <button component="category/post" for="category-dropdown-check" class="btn btn-primary btn-sm text-nowrap" id="new_topic" role="button">
         [[category:new-topic-button]]
     </button>
+    <!-- New Poll Button -->
+    <a href="{config.relative_path}/poll" class="btn btn-primary btn-sm text-nowrap" id="new_poll" role="button" data-ajaxify="false">
+        [[category:new-poll-button]]
+    </a>
 </div>
 
 <noscript>

@@ -233,6 +233,10 @@ Users.getExportByType = async (req, res, next) => {
 };
 
 Users.generateExportsByType = async (req, res) => {
-	await api.users.generateExport(req, req.params);
-	helpers.formatApiResponse(202, res);
+	try {
+		await api.users.generateExport(req, req.params);
+		helpers.formatApiResponse(202, res);
+	} catch (err) {
+		helpers.formatApiResponse(400, res, err);
+	}
 };
