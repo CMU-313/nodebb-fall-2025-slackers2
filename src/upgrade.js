@@ -27,7 +27,7 @@ Upgrade.getAll = async function () {
 	let files = await file.walk(path.join(__dirname, './upgrades'));
 
 	// Sort the upgrade scripts based on version
-	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort((a, b) => {
+	files = files.filter(file => path.basename(file) !== 'TEMPLATE' && path.basename(file) !== 'TEMPLATE 2').sort((a, b) => {
 		const versionA = path.dirname(a).split(path.sep).pop();
 		const versionB = path.dirname(b).split(path.sep).pop();
 		const semverCompare = semver.compare(versionA, versionB);
