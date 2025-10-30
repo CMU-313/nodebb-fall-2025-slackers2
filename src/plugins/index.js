@@ -1,3 +1,4 @@
+// @flow
 'use strict';
 
 const fs = require('fs');
@@ -12,6 +13,27 @@ const user = require('../user');
 const posts = require('../posts');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
+
+/*::
+type PluginData = {
+	id: string,
+	name: string,
+	url: string,
+	description?: string,
+	version?: string,
+	latest?: string,
+	installed: boolean,
+	active: boolean,
+	isTheme?: boolean,
+	outdated?: boolean,
+	error?: boolean,
+	license?: ?{
+		name?: string,
+		text?: string,
+	},
+	...
+};
+*/
 
 let app;
 let middleware;
@@ -192,7 +214,7 @@ Plugins.listTrending = async () => {
 	return body;
 };
 
-Plugins.normalise = async function (apiReturn) {
+Plugins.normalise = async function (apiReturn/*:: : any */)/*:: : Promise<Array<PluginData>> */ {
 	const pluginMap = {};
 	const { dependencies } = require(paths.currentPackage);
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
@@ -220,7 +242,7 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
 		pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
 		pluginMap[plugin.id].description = plugin.description;
-		pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
+		pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url || '';
 		pluginMap[plugin.id].installed = true;
 		pluginMap[plugin.id].isTheme = themeNamePattern.test(plugin.id);
 		pluginMap[plugin.id].error = plugin.error || false;
