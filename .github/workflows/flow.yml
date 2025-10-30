@@ -33,14 +33,4 @@ jobs:
           useLockFile: false
 
       - name: Run Flow check
-        run: npm run flow
-
-      - name: Generate Flow report artifact
-        run: npm run flow:report
-
-      - name: Upload Flow report
-        uses: actions/upload-artifact@v4
-        with:
-          name: flow-report
-          path: flow_report.txt
-
+        run: npx --yes flow-bin@0.289.0 flow check
