@@ -25,10 +25,5 @@ jobs:
         with:
           node-version: 22
 
-      # - name: NPM Install
-      #   uses: bahmutov/npm-install@v1
-      #   with:
-      #     useLockFile: false
-
       - name: Run Flow check
         run: npx --yes flow-bin@0.289.0 check
