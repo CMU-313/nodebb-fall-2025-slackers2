@@ -1,4 +1,3 @@
-// @flow
 'use strict';
 
 const zxcvbn = require('zxcvbn');
@@ -12,24 +11,8 @@ const groups = require('../groups');
 const meta = require('../meta');
 const analytics = require('../analytics');
 
-/*::
-type UserData = {
-	username: string,
-	email?: string,
-	password?: string,
-	userslug?: string,
-	timestamp?: number,
-	picture?: string,
-	fullname?: string,
-	birthday?: string,
-	gdpr_consent?: boolean,
-	acceptTos?: boolean,
-	...
-};
-*/
-
 module.exports = function (User) {
-	User.create = async function (data/*:: : UserData */)/*:: : Promise<number> */ {
+	User.create = async function (data) {
 		data.username = data.username.trim();
 		data.userslug = slugify(data.username);
 		if (data.email !== undefined) {
@@ -153,7 +136,7 @@ module.exports = function (User) {
 		]);
 	}
 
-	User.isDataValid = async function (userData/*:: : UserData */)/*:: : Promise<void> */ {
+	User.isDataValid = async function (userData) {
 		if (userData.email && !utils.isEmailValid(userData.email)) {
 			throw new Error('[[error:invalid-email]]');
 		}
@@ -174,7 +157,7 @@ module.exports = function (User) {
 		}
 	};
 
-	User.isPasswordValid = function (password/*:: : string */, minStrength/*:: ?: number */)/*:: : void */ {
+	User.isPasswordValid = function (password, minStrength) {
 		minStrength = (minStrength || minStrength === 0) ? minStrength : meta.config.minimumPasswordStrength;
 
 		// Sanity checks: Checks if defined and is string

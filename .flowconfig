@@ -11,10 +11,7 @@
 .*\.css$
 
 [include]
-./src/
-./public/src/
-./app.js
-./loader.js
+./src/flow-tests/
 
 [libs]
 

@@ -1,4 +1,3 @@
-// @flow
 'use strict';
 
 const fs = require('fs');
@@ -13,27 +12,6 @@ const user = require('../user');
 const posts = require('../posts');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
-
-/*::
-type PluginData = {
-	id: string,
-	name: string,
-	url: string,
-	description?: string,
-	version?: string,
-	latest?: string,
-	installed: boolean,
-	active: boolean,
-	isTheme?: boolean,
-	outdated?: boolean,
-	error?: boolean,
-	license?: ?{
-		name?: string,
-		text?: string,
-	},
-	...
-};
-*/
 
 let app;
 let middleware;
@@ -214,7 +192,7 @@ Plugins.listTrending = async () => {
 	return body;
 };
 
-Plugins.normalise = async function (apiReturn/*:: : any */)/*:: : Promise<Array<PluginData>> */ {
+Plugins.normalise = async function (apiReturn) {
 	const pluginMap = {};
 	const { dependencies } = require(paths.currentPackage);
 	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];

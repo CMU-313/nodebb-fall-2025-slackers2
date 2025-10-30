@@ -1,4 +1,3 @@
-// @flow
 'use strict';
 
 const nconf = require('nconf');
@@ -8,7 +7,7 @@ const meta = require('../../meta');
 
 const pluginsController = module.exports;
 
-pluginsController.get = async function (req/*:: : any */, res/*:: : any */)/*:: : Promise<void> */ {
+pluginsController.get = async function (req, res) {
 	const [compatible, all, trending] = await Promise.all([
 		getCompatiblePlugins(),
 		getAllPlugins(),
@@ -60,7 +59,7 @@ async function getAllPlugins() {
 	return await getPlugins(false);
 }
 
-async function getPlugins(matching/*:: : boolean */)/*:: : Promise<Array<any>> */ {
+async function getPlugins(matching) {
 	try {
 		const pluginsData = await plugins.list(matching);
 		return pluginsData || [];
