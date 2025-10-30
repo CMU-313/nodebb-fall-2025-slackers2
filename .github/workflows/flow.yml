@@ -1,0 +1,29 @@
+name: Flow Type Check
+
+on:
+  push:
+    branches: 
+      - main
+      - master
+      - develop
+      - tool_test/**
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+      - tool_test/**
+
+jobs:
+  flow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run Flow check
+        run: npx --yes flow-bin@0.289.0 check
