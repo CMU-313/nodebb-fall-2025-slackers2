@@ -20,18 +20,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run: cp install/package.json package.json
+
       - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: NPM Install
+        - name: NPM Install
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
 
       - name: Run Flow check
-        run: npm run flow:check
+        run: npm run flow
 
       - name: Generate Flow report artifact
         run: npm run flow:report
