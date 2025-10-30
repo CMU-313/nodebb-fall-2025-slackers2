@@ -1,0 +1,86 @@
+Error --------------------------------------------------------------------------------- src/flow-tests/generics.js:10:14
+
+Cannot call `numbers.push` because in array element: string [1] is incompatible with number [2]. [incompatible-type]
+
+   src/flow-tests/generics.js:10:14
+   10| numbers.push('4');
+                    ^^^ [1]
+
+References:
+   src/flow-tests/generics.js:7:22
+    7| const numbers: Array<number> = [1, 2, 3];
+                            ^^^^^^ [2]
+
+
+Error ----------------------------------------------------------------------------- src/flow-tests/object_shape.js:18:34
+
+Cannot call `requireAdmin` with object literal bound to `user` because in property `id`: string [1] is incompatible with
+number [2]. [incompatible-type]
+
+   src/flow-tests/object_shape.js:18:34
+   18| const admin = requireAdmin({ id: '1', username: 'alice' });
+                                        ^^^ [1]
+
+References:
+   src/flow-tests/object_shape.js:4:9
+    4|     id: number,
+               ^^^^^^ [2]
+
+
+Error ----------------------------------------------------------------------------- src/flow-tests/promise_types.js:7:17
+
+Cannot call `resolve` with `'42'` bound to `result` because: [incompatible-type]
+ - Either string [1] is incompatible with number [2].
+ - Or string [1] is incompatible with `Promise` [3].
+
+   src/flow-tests/promise_types.js:7:17
+      7|         resolve('42');
+                         ^^^^ [1]
+
+References:
+   src/flow-tests/promise_types.js:3:32
+      3| function fetchCount(): Promise<number> {
+                                        ^^^^^^ [2]
+   /private/tmp/flow/flowlib_70f6ab141eb0f13c_501/core.js:2201:25
+   2201|       resolve: (result: Promise<R> | R) => void,
+                                 ^^^^^^^^^^ [3]
+
+
+Error ------------------------------------------------------------------------------ src/flow-tests/strict_null.js:10:26
+
+Cannot call `square` with `maybeNum` bound to `n` because null or undefined [1] is incompatible with number [2].
+[incompatible-type]
+
+   src/flow-tests/strict_null.js:10:26
+   10| const badSquare = square(maybeNum);
+                                ^^^^^^^^
+
+References:
+   src/flow-tests/strict_null.js:8:17
+    8| const maybeNum: ?number = null;
+                       ^^^^^^^ [1]
+   src/flow-tests/strict_null.js:3:20
+    3| function square(n: number): number {
+                          ^^^^^^ [2]
+
+
+Error ------------------------------------------------------------------------- src/flow-tests/union_refinement.js:13:24
+
+Cannot get `result.data.length` because property `length` is missing in `void` (due to access of non-existent property
+`data`) [1]. [incompatible-use]
+
+   src/flow-tests/union_refinement.js:13:24
+   13|     return result.data.length;
+                              ^^^^^^
+
+References:
+   src/flow-tests/union_refinement.js:13:12
+   13|     return result.data.length;
+                  ^^^^^^^^^^^ [1]
+
+
+
+Found 5 errors
+
+Only showing the most relevant union/intersection branches.
+To see all branches, re-run Flow with --show-all-branches
