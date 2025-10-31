@@ -1,0 +1,54 @@
+{
+  "name": "nodebb-snyk-configuration",
+  "description": "Snyk security analysis configuration for NodeBB project",
+  "organization": "nodebb-fall-2025-slackers2",
+  "analysis": {
+    "enabled": true,
+    "scanTypes": [
+      "dependencies",
+      "license-compliance",
+      "code-analysis"
+    ]
+  },
+  "thresholds": {
+    "critical": 0,
+    "high": 10,
+    "medium": 50,
+    "low": 100
+  },
+  "reporting": {
+    "formats": ["json", "html"],
+    "outputDirectory": "./security-reports",
+    "generateOnScan": true
+  },
+  "monitoring": {
+    "enabled": true,
+    "frequency": "weekly",
+    "notifications": {
+      "email": true,
+      "slack": false
+    }
+  },
+  "excludePatterns": [
+    "**/test/**",
+    "**/coverage/**",
+    "**/build/**",
+    "**/public/uploads/**",
+    "**/logs/**",
+    "**/node_modules/**"
+  ],
+  "commands": {
+    "test": "npx snyk test --severity-threshold=high",
+    "monitor": "npx snyk monitor",
+    "report": "npx snyk test --json > ./security-reports/snyk-report.json",
+    "wizard": "npx snyk wizard"
+  },
+  "integrationNotes": [
+    "Snyk is integrated as a dev dependency",
+    "Run './snyk-analysis.sh' for comprehensive security analysis",
+    "GitHub Actions workflow configured at .github/workflows/snyk-security.yml",
+    "Policy file located at .snyk for customizing vulnerability handling",
+    "Requires SNYK_TOKEN environment variable for CI/CD integration"
+  ]
+}
+

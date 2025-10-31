@@ -1,0 +1,31 @@
+# Snyk (https://snyk.io) policy file
+# Generated for NodeBB project
+version: v1.25.0
+
+# Ignores are used for vulnerabilities that are not a risk in this project
+ignore: {}
+
+# Patches apply the minimum changes required to fix a vulnerability
+patch: {}
+
+# Language settings configure Snyk's behavior for this project
+language-settings:
+  javascript:
+    # Scan both production and development dependencies
+    includeDevDependencies: true
+
+# Exclude directories from scanning
+exclude:
+  # Build artifacts
+  - build/
+  - dist/
+  # Test files
+  - test/
+  # Coverage reports
+  - coverage/
+  # Logs
+  - logs/
+  # Public assets
+  - public/uploads/
+  - public/templates/
+
