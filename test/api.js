@@ -695,7 +695,6 @@ describe('API', async () => {
 				return;
 			}
 
-			assert(schema[prop], `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context})`);
-		});
+			assert(schema[prop], `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context}), SCHEMA ${JSON.stringify(schema)}`);});
 	}
 });
