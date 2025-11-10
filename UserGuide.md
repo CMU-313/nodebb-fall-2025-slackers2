@@ -1,4 +1,4 @@
-#Polls
+# Polls
 
 The two main features added with polls so far are the backend for polls as well 
 as poll creation and poll voting. For the backend for polls you can run the 
@@ -14,7 +14,7 @@ radio buttons. Once you have clicked and submitted your answer you will see the
 vote count for that instance increase. 
 
 
-#Anonymous Features
+# Anonymous Features
 
 The main feature added for anonymous is being able to make posts where the user
 profile and name is not displayed. 
