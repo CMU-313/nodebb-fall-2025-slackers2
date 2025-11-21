@@ -1,0 +1,31 @@
+{
+  "esversion": 11,
+  "node": true,
+  "browser": true,
+  "mocha": true,
+  "strict": "implied",
+  "undef": true,
+  "unused": "vars",
+  "latedef": "nofunc",
+  "eqeqeq": true,
+  "curly": true,
+  "immed": true,
+  "noarg": true,
+  "freeze": true,
+  "loopfunc": false,
+  "maxcomplexity": 15,
+  "maxdepth": 5,
+  "maxlen": 220,
+  "predef": [
+    "__dirname",
+    "module",
+    "require",
+    "define",
+    "describe",
+    "it",
+    "before",
+    "after",
+    "beforeEach",
+    "afterEach"
+  ]
+}
